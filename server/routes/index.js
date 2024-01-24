@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-
+import CartController from "../controllers/CartController.js";
 import { signup, login } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import SelectAddressController from "../controllers/SelectAddressController.js";
@@ -92,4 +92,9 @@ router.delete("/addresses/:addressId", SelectAddressController.deleteAddress);
 
 // Route for getting an address by ID
 router.get("/addresses/:addressId", SelectAddressController.getAddressById);
+
+router.post("/add", CartController.addToCart);
+router.post("/remove", CartController.removeFromCart);
+router.post("/update", CartController.updateCartItem);
+router.get("/:userId", CartController.getCart);
 export default router;

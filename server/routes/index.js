@@ -14,8 +14,8 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 
-router.post("/admin/signup", signup);
-router.post("/admin/login", login);
+router.post("/signup", signup);
+router.post("/login", login);
 // Add more routes as needed
 // Create a new bill details entry
 router.post("/bill-details", createBillDetails);

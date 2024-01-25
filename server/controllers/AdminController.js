@@ -151,7 +151,7 @@ const addItem = async (req, res) => {
 // Use Multer middleware to handle file uploads for multiple images
 const uploadMiddleware = upload.array("itemImages", 5); // assuming max 5 images per item
 
-// Export the controller functions and the Multer middleware
+// Export the controller functions and the Multer middleware yes
 export default {
   adminSignup,
   adminLogin,

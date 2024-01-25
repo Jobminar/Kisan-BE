@@ -6,7 +6,6 @@ const itemSchema = new Schema({
   itemname: { type: String, required: true },
   units: {
     type: String,
-    enum: ["kg", "grams", "dozen", "number"],
     default: "kg",
   },
   costPerUnit: { type: Number, required: true },

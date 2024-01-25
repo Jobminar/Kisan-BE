@@ -1,29 +1,32 @@
 // app.js
 
-import express from "express";
-import { connect } from "mongoose";
-import bodyParser from "body-parser"; // Use require for CommonJS modules
-import routes from "./routes/index.js";
-import dotenv from "dotenv";
+const express = require("express"); // Use require for CommonJS modules
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const routes = require("./routes/index.js");
+const dotenv = require("dotenv");
+const cors = require("cors");
+
 const app = express();
 const port = process.env.PORT || 3000;
-import cors from "cors";
-// Connect to MongoDB
+
+// Load environment variables
 dotenv.config();
-connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+
+// Connect to MongoDB (remove deprecated options)
+mongoose
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
 // Middleware
-app.use(bodyParser.json()); // Use bodyParser.json() instead of json()
+app.use(bodyParser.json()); // Correct usage of bodyParser.json()
 app.use(cors());
+
 // Routes
 app.use("/", routes);
 
-// Error handler middleware
+// Error handler middleware (you'll need to implement this)
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

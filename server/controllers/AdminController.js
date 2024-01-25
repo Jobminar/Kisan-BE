@@ -77,7 +77,7 @@ const adminLogin = async (req, res) => {
 };
 
 // Create a controller function for getting the inventory
-const getInventory = async (req, res) => {
+const getInventory = async (_req, res) => {
   try {
     // Find the admin (assuming adminId is not needed anymore)
     const admin = await AdminModel.findOne();
@@ -96,18 +96,24 @@ const getInventory = async (req, res) => {
   }
 };
 
-// Create a controller function for adding an item to the inventory
-// Update the controller function
+// adding item to inventory
 const addItem = async (req, res) => {
   try {
-    // Get the category from the request body
-    const { category } = req.body;
+    // Get the category and item details from the request body
+    const {
+      category,
+      itemname,
+      description,
+      units,
+      costPerUnit,
+      discount,
+      quantity,
+    } = req.body;
 
-    // Rest of the code remains unchanged...
     // Process image upload with Multer for multiple images
     const itemImages = req.files;
 
-    // Add the item to the inventory with the images
+    // Create a new item object
     const newItem = {
       itemname,
       description,
@@ -120,11 +126,20 @@ const addItem = async (req, res) => {
         : [],
     };
 
-    // Modify this line based on your actual data structure, assuming 'inventory' is available globally
-    admin.inventory[category].push(newItem);
+    // Find and update the inventory directly without relying on admin existence
+    const result = await AdminModel.updateOne(
+      {},
+      {
+        $push: {
+          [`inventory.${category}`]: newItem,
+        },
+      }
+    );
 
-    // Save the admin to the database
-    await admin.save();
+    // Check if the update was successful
+    if (result.nModified === 0) {
+      return res.status(404).json({ message: "Category not found" });
+    }
 
     // Send a success response
     res.status(201).json({ message: "Item added successfully" });

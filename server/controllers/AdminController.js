@@ -1,6 +1,9 @@
-// Import the required modules
 import AdminModel from "../models/AdminModel.js";
-import { hash, verify } from "argon2"; // For password hashing
+import { hash, verify } from "argon2";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Create a controller function for admin signup
 const adminSignup = async (req, res) => {
@@ -9,8 +12,8 @@ const adminSignup = async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username already exists
-    const admin = await findOne({ "adminLogin.username": username });
-    if (admin) {
+    const existingAdmin = await findOne({ "adminLogin.username": username });
+    if (existingAdmin) {
       return res.status(400).json({ message: "Username already taken" });
     }
 
@@ -39,8 +42,8 @@ const adminSignup = async (req, res) => {
     res.status(201).json({ message: "Admin created successfully" });
   } catch (error) {
     // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    console.error("Error in adminSignup:", error);
+    res.status(500).json({ message: "Error creating admin" });
   }
 };
 
@@ -66,8 +69,8 @@ const adminLogin = async (req, res) => {
     res.status(200).json({ message: "Admin logged in successfully" });
   } catch (error) {
     // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    console.error("Error in adminLogin:", error);
+    res.status(500).json({ message: "Error logging in admin" });
   }
 };
 
@@ -89,8 +92,8 @@ const getInventory = async (req, res) => {
     res.status(200).json({ inventory: admin.inventory });
   } catch (error) {
     // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    console.error("Error in getInventory:", error);
+    res.status(500).json({ message: "Error fetching inventory" });
   }
 };
 
@@ -101,7 +104,8 @@ const addItem = async (req, res) => {
     const { adminId, itemType } = req.params;
 
     // Get the item data from the body
-    const item = req.body;
+    const { name, description, units, costPerUnit, discount, quantity } =
+      req.body;
 
     // Find the admin by id
     const admin = await findById(adminId);
@@ -112,16 +116,31 @@ const addItem = async (req, res) => {
     }
 
     // Check if the item type is valid
-    if (
-      !["freshVegetables", "freshFruits", "offerZone", "quickPicks"].includes(
-        itemType
-      )
-    ) {
+    const validItemTypes = [
+      "freshVegetables",
+      "freshFruits",
+      "offerZone",
+      "quickPicks",
+    ];
+    if (!validItemTypes.includes(itemType)) {
       return res.status(400).json({ message: "Invalid item type" });
     }
 
-    // Add the item to the inventory
-    admin.inventory[itemType].push(item);
+    // Process image upload with Multer
+    const itemImage = req.file; // assuming the file input in the form is named 'itemImage'
+
+    // Add the item to the inventory with the image
+    const newItem = {
+      name,
+      description,
+      units,
+      costPerUnit,
+      discount,
+      quantity,
+      itemImage: itemImage ? itemImage.buffer.toString("base64") : null,
+    };
+
+    admin.inventory[itemType].push(newItem);
 
     // Save the admin to the database
     await admin.save();
@@ -130,15 +149,19 @@ const addItem = async (req, res) => {
     res.status(201).json({ message: "Item added successfully" });
   } catch (error) {
     // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    console.error("Error in addItem:", error);
+    res.status(500).json({ message: "Error adding item to inventory" });
   }
 };
 
-// Export the controller functions
+// Use Multer middleware to handle file uploads
+const uploadMiddleware = upload.single("itemImage");
+
+// Export the controller functions and the Multer middleware
 export default {
   adminSignup,
   adminLogin,
   getInventory,
-  addItem,
+  addItem: [uploadMiddleware, addItem],
+  uploadMiddleware,
 };

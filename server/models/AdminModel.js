@@ -3,7 +3,6 @@ import { Schema, model } from "mongoose";
 // Define sub-schema for items (vegetables and fruits)
 const itemSchema = new Schema({
   category: { type: String, required: true },
-  type: { type: String, required: true },
   name: { type: String, required: true },
   units: {
     type: String,
@@ -14,7 +13,7 @@ const itemSchema = new Schema({
   discount: { type: Number, default: 0 },
   quantity: { type: Number, default: 0 },
   description: String,
-  itemImage: { type: String },
+  itemImage: [{ type: String }],
 });
 
 // Define inventory schema
@@ -25,6 +24,7 @@ const inventorySchema = new Schema({
   quickPicks: [itemSchema],
 });
 
+// Define order schema
 // Define order schema
 const orderSchema = new Schema({
   items: [itemSchema],

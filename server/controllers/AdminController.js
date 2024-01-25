@@ -12,7 +12,9 @@ const adminSignup = async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username already exists
-    const existingAdmin = await findOne({ "adminLogin.username": username });
+    const existingAdmin = await AdminModel.findOne({
+      "adminLogin.username": username,
+    });
     if (existingAdmin) {
       return res.status(400).json({ message: "Username already taken" });
     }
@@ -54,7 +56,7 @@ const adminLogin = async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username exists
-    const admin = await findOne({ "adminLogin.username": username });
+    const admin = await AdminModel.findOne({ "adminLogin.username": username });
     if (!admin) {
       return res.status(404).json({ message: "Username not found" });
     }
@@ -77,11 +79,8 @@ const adminLogin = async (req, res) => {
 // Create a controller function for getting the inventory
 const getInventory = async (req, res) => {
   try {
-    // Get the admin id from the params
-    const { adminId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
+    // Find the admin (assuming adminId is not needed anymore)
+    const admin = await AdminModel.findOne();
 
     // Check if the admin exists
     if (!admin) {
@@ -100,28 +99,28 @@ const getInventory = async (req, res) => {
 // Create a controller function for adding an item to the inventory
 const addItem = async (req, res) => {
   try {
-    // Get the item type from the params
-    const { itemType } = req.params;
+    // Get the category from the params
+    const { category } = req.params;
 
     // Get the item data from the body
     const { name, description, units, costPerUnit, discount, quantity } =
       req.body;
 
-    // Check if the item type is valid
-    const validItemTypes = [
+    // Check if the category is valid
+    const validCategories = [
       "freshVegetables",
       "freshFruits",
       "offerZone",
       "quickPicks",
     ];
-    if (!validItemTypes.includes(itemType)) {
-      return res.status(400).json({ message: "Invalid item type" });
+    if (!validCategories.includes(category)) {
+      return res.status(400).json({ message: "Invalid category" });
     }
 
-    // Process image upload with Multer
-    const itemImage = req.file; // assuming the file input in the form is named 'itemImage'
+    // Process image upload with Multer for multiple images
+    const itemImages = req.files; // assuming the file input in the form is named 'itemImages'
 
-    // Add the item to the inventory with the image
+    // Add the item to the inventory with the images
     const newItem = {
       name,
       description,
@@ -129,11 +128,16 @@ const addItem = async (req, res) => {
       costPerUnit,
       discount,
       quantity,
-      itemImage: itemImage ? itemImage.buffer.toString("base64") : null,
+      itemImages: itemImages
+        ? itemImages.map((image) => image.buffer.toString("base64"))
+        : [],
     };
 
     // Modify this line based on your actual data structure, assuming 'inventory' is available globally
-    getInventory[itemType].push(newItem);
+    admin.inventory[category].push(newItem);
+
+    // Save the admin to the database
+    await admin.save();
 
     // Send a success response
     res.status(201).json({ message: "Item added successfully" });
@@ -144,8 +148,8 @@ const addItem = async (req, res) => {
   }
 };
 
-// Use Multer middleware to handle file uploads
-const uploadMiddleware = upload.single("itemImage");
+// Use Multer middleware to handle file uploads for multiple images
+const uploadMiddleware = upload.array("itemImages", 5); // assuming max 5 images per item
 
 // Export the controller functions and the Multer middleware
 export default {

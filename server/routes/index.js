@@ -38,25 +38,28 @@ router.post("/admin/signup", adminController.adminSignup);
 router.post("/admin/login", adminController.adminLogin);
 
 // Get admin inventory
-router.get("/inventory", InventoryController.getInventory);
+router.get("/admin/inventory", adminController.getInventory);
 
 // Add item to admin inventory
-router.post("/inventory/:itemType/add", InventoryController.addItem);
+router.post("/admin/inventory/:category/add", adminController.addItem);
 
-// Update item in admin inventory
+// Get admin inventory (if needed)
+router.get("/inventory", InventoryController.getInventory);
+
+// Add item to admin inventory (if needed)
+router.post("/inventory/:category/add", InventoryController.addItem);
+
+// Update item in admin inventory (if needed)
 router.put(
-  "/inventory/:itemType/:itemId/update",
+  "/inventory/:category/:itemId/update",
   InventoryController.updateItem
 );
 
-// Delete item from admin inventory
+// Delete item from admin inventory (if needed)
 router.delete(
-  "/inventory/:itemType/:itemId/delete",
+  "/inventory/:category/:itemId/delete",
   InventoryController.deleteItem
 );
-
-// Get all items in admin inventory
-router.get("/inventory/all", InventoryController.getAllItems);
 
 // Get all orders
 router.get("/admin/:adminId/orders", OrderController.getAllOrders);

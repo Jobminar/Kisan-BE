@@ -41,7 +41,7 @@ router.post("/admin/login", adminController.adminLogin);
 router.get("/admin/inventory", adminController.getInventory);
 
 // Add item to admin inventory
-router.post("/admin/inventory/:category/add", adminController.addItem);
+router.post("/admin/inventory/add", adminController.addItem);
 
 // Get admin inventory (if needed)
 router.get("/inventory", InventoryController.getInventory);

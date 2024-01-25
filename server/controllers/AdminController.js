@@ -97,28 +97,15 @@ const getInventory = async (req, res) => {
 };
 
 // Create a controller function for adding an item to the inventory
+// Update the controller function
 const addItem = async (req, res) => {
   try {
-    // Get the category from the params
-    const { category } = req.params;
+    // Get the category from the request body
+    const { category } = req.body;
 
-    // Get the item data from the body
-    const { name, description, units, costPerUnit, discount, quantity } =
-      req.body;
-
-    // Check if the category is valid
-    const validCategories = [
-      "freshVegetables",
-      "freshFruits",
-      "offerZone",
-      "quickPicks",
-    ];
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ message: "Invalid category" });
-    }
-
+    // Rest of the code remains unchanged...
     // Process image upload with Multer for multiple images
-    const itemImages = req.files; // assuming the file input in the form is named 'itemImages'
+    const itemImages = req.files;
 
     // Add the item to the inventory with the images
     const newItem = {

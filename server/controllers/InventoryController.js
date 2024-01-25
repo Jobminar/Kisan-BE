@@ -1,28 +1,29 @@
-import ItemModel from "../models/Item.js"; // Assuming you've renamed your model to ItemModel
+import ItemModel from "../models/Item.js";
 import multer from "multer";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Create a controller function for getting the inventory
-const getInventory = async (req, res) => {
+const getInventory = async (_req, res) => {
   try {
-    const items = await ItemModel.find(); // Retrieve all items from the collection
-    res.status(200).json({ items: items });
+    const items = await ItemModel.find();
+    res.status(200).json({ items });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-// Create a controller function for adding an item to the inventory
 const addItem = async (req, res) => {
   try {
-    upload.array("itemImages", 5)(req, res, async (err) => {
-      if (err instanceof multer.MulterError) {
-        return res.status(400).json({ message: "File upload error" });
-      } else if (err) {
+    upload.single("itemImage")(req, res, async (err) => {
+      if (err) {
         console.error(err);
+
+        if (err instanceof multer.MulterError) {
+          return res.status(400).json({ message: "File upload error" });
+        }
+
         return res.status(500).json({ message: "Internal server error" });
       }
 
@@ -36,7 +37,17 @@ const addItem = async (req, res) => {
         quantity,
       } = req.body;
 
-      const itemImages = req.files;
+      // Validate required fields
+      if (!category || !itemname || !units || !costPerUnit || !quantity) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const itemImage = req.file;
+
+      if (!itemImage) {
+        console.log("Warning: itemImage is empty");
+        // Handle the case where itemImage is empty (e.g., provide a default image)
+      }
 
       const newItem = {
         category,
@@ -46,9 +57,7 @@ const addItem = async (req, res) => {
         costPerUnit,
         discount,
         quantity,
-        itemImages: itemImages
-          ? itemImages.map((image) => image.buffer.toString("base64"))
-          : [],
+        itemImage: itemImage ? itemImage.buffer.toString("base64") : "",
       };
 
       // Save the new item to the database
@@ -62,7 +71,6 @@ const addItem = async (req, res) => {
   }
 };
 
-// Export the controller functions
 export default {
   getInventory,
   addItem,

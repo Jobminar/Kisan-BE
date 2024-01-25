@@ -11,7 +11,7 @@ const itemSchema = new Schema({
   discount: { type: Number, default: 0 },
   quantity: { type: Number, default: 0 },
   description: String,
-  itemImage: [{ type: String }],
+  itemImage: { type: String },
 });
 
 const ItemModel = model("Item", itemSchema);

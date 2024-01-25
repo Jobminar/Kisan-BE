@@ -1,22 +1,15 @@
-// Import the required modules
-import AdminModel from "../models/AdminModel.js";
+import InventoryModel from "../models/Inventory.js";
+import multer from "multer";
 
+// Assuming you have a storage configuration for Multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 // Create a controller function for getting the inventory
 const getInventory = async (req, res) => {
   try {
-    // Get the admin id from the params
-    const { adminId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Send the inventory as a response
-    res.status(200).json({ inventory: admin.inventory });
+    // Assuming you have a global 'inventory' variable, modify accordingly
+    const inventory = await InventoryModel.findOne(); // Assuming you have a single inventory document
+    res.status(200).json({ inventory: inventory });
   } catch (error) {
     // Handle any errors
     console.error(error);
@@ -27,143 +20,73 @@ const getInventory = async (req, res) => {
 // Create a controller function for adding an item to the inventory
 const addItem = async (req, res) => {
   try {
-    // Get the admin id and the item type from the params
-    const { adminId, itemType } = req.params;
+    // Use Multer middleware to handle file uploads
+    upload.array("itemImages", 5)(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        // Multer error occurred
+        return res.status(400).json({ message: "File upload error" });
+      } else if (err) {
+        // Other error occurred
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
 
-    // Get the item data from the body
-    const item = req.body;
+      // Get the item data from the body
+      const {
+        category,
+        itemname,
+        description,
+        units,
+        costPerUnit,
+        discount,
+        quantity,
+      } = req.body;
 
-    // Find the admin by id
-    const admin = await findById(adminId);
+      // Process image upload with Multer for multiple images
+      const itemImages = req.files;
 
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
+      // Add the item to the inventory with the images
+      const newItem = {
+        category,
+        itemname,
+        description,
+        units,
+        costPerUnit,
+        discount,
+        quantity,
+        itemImages: itemImages
+          ? itemImages.map((image) => image.buffer.toString("base64"))
+          : [],
+      };
 
-    // Check if the item type is valid
-    if (
-      !["freshVegetables", "freshFruits", "offerZone", "quickPicks"].includes(
-        itemType
-      )
-    ) {
-      return res.status(400).json({ message: "Invalid item type" });
-    }
+      // Find or create a single inventory document
+      let inventory = await InventoryModel.findOne();
 
-    // Add the item to the inventory
-    admin.inventory[itemType].push(item);
+      if (!inventory) {
+        // If inventory doesn't exist, create a new document
+        inventory = new InventoryModel({
+          freshVegetables: [],
+          freshFruits: [],
+          offerZone: [],
+          quickPicks: [],
+        });
 
-    // Save the admin to the database
-    await admin.save();
+        await inventory.save();
+      }
 
-    // Send a success response
-    res.status(201).json({ message: "Item added successfully" });
+      // Modify this line based on your actual data structure
+      inventory[category].push(newItem);
+
+      // Save the inventory to the database
+      await inventory.save();
+
+      // Send a success response
+      res.status(201).json({ message: "Item added successfully" });
+    });
   } catch (error) {
     // Handle any errors
     console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Create a controller function for updating an item in the inventory
-const updateItem = async (req, res) => {
-  try {
-    // Get the admin id, item type, and item id from the params
-    const { adminId, itemType, itemId } = req.params;
-
-    // Get the updated item data from the body
-    const updatedItem = req.body;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Check if the item type is valid
-    if (
-      !["freshVegetables", "freshFruits", "offerZone", "quickPicks"].includes(
-        itemType
-      )
-    ) {
-      return res.status(400).json({ message: "Invalid item type" });
-    }
-
-    // Find the index of the item in the inventory array
-    const itemIndex = admin.inventory[itemType].findIndex(
-      (item) => item._id == itemId
-    );
-
-    // Check if the item exists
-    if (itemIndex === -1) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    // Update the item in the inventory
-    admin.inventory[itemType][itemIndex] = {
-      ...admin.inventory[itemType][itemIndex],
-      ...updatedItem,
-    };
-
-    // Save the admin to the database
-    await admin.save();
-
-    // Send a success response
-    res.status(200).json({ message: "Item updated successfully" });
-  } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Create a controller function for deleting an item from the inventory
-const deleteItem = async (req, res) => {
-  try {
-    // Get the admin id, item type, and item id from the params
-    const { adminId, itemType, itemId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Check if the item type is valid
-    if (
-      !["freshVegetables", "freshFruits", "offerZone", "quickPicks"].includes(
-        itemType
-      )
-    ) {
-      return res.status(400).json({ message: "Invalid item type" });
-    }
-
-    // Find the index of the item in the inventory array
-    const itemIndex = admin.inventory[itemType].findIndex(
-      (item) => item._id == itemId
-    );
-
-    // Check if the item exists
-    if (itemIndex === -1) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    // Remove the item from the inventory
-    admin.inventory[itemType].splice(itemIndex, 1);
-
-    // Save the admin to the database
-    await admin.save();
-
-    // Send a success response
-    res.status(200).json({ message: "Item deleted successfully" });
-  } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Error adding item to inventory" });
   }
 };
 
@@ -171,6 +94,4 @@ const deleteItem = async (req, res) => {
 export default {
   getInventory,
   addItem,
-  updateItem,
-  deleteItem,
 };

@@ -97,58 +97,58 @@ const getInventory = async (_req, res) => {
 };
 
 // adding item to inventory
-const addItem = async (req, res) => {
-  try {
-    // Get the category and item details from the request body
-    const {
-      category,
-      itemname,
-      description,
-      units,
-      costPerUnit,
-      discount,
-      quantity,
-    } = req.body;
+// const addItem = async (req, res) => {
+//   try {
+//     // Get the category and item details from the request body
+//     const {
+//       category,
+//       itemname,
+//       description,
+//       units,
+//       costPerUnit,
+//       discount,
+//       quantity,
+//     } = req.body;
 
-    // Process image upload with Multer for multiple images
-    const itemImages = req.files;
+//     // Process image upload with Multer for multiple images
+//     const itemImages = req.files;
 
-    // Create a new item object
-    const newItem = {
-      itemname,
-      description,
-      units,
-      costPerUnit,
-      discount,
-      quantity,
-      itemImages: itemImages
-        ? itemImages.map((image) => image.buffer.toString("base64"))
-        : [],
-    };
+//     // Create a new item object
+//     const newItem = {
+//       itemname,
+//       description,
+//       units,
+//       costPerUnit,
+//       discount,
+//       quantity,
+//       itemImages: itemImages
+//         ? itemImages.map((image) => image.buffer.toString("base64"))
+//         : [],
+//     };
 
-    // Find and update the inventory directly without relying on admin existence
-    const result = await AdminModel.updateOne(
-      {},
-      {
-        $push: {
-          [`inventory.${category}`]: newItem,
-        },
-      }
-    );
+//     // Directly insert the new item into the specified category in the inventory collection
+//     const result = await AdminModel.updateOne(
+//       {},
+//       {
+//         $push: {
+//           [`inventory.${category}`]: newItem,
+//         },
+//       }
+//     );
 
-    // Check if the update was successful
-    if (result.nModified === 0) {
-      return res.status(404).json({ message: "Category not found" });
-    }
+//     // Check if the update was successful
+//     if (result.nModified === 0) {
+//       return res.status(404).json({ message: "Category not found" });
+//     }
 
-    // Send a success response
-    res.status(201).json({ message: "Item added successfully" });
-  } catch (error) {
-    // Handle any errors
-    console.error("Error in addItem:", error);
-    res.status(500).json({ message: "Error adding item to inventory" });
-  }
-};
+//     // Send a success response
+//     res.status(201).json({ message: "Item added successfully" });
+//   } catch (error) {
+//     // Handle any errors
+//     console.error("Error in addItem:", error);
+//     res.status(500).json({ message: "Error adding item to inventory" });
+//   }
+// };
 
 // Use Multer middleware to handle file uploads for multiple images
 const uploadMiddleware = upload.array("itemImages", 5); // assuming max 5 images per item
@@ -158,6 +158,6 @@ export default {
   adminSignup,
   adminLogin,
   getInventory,
-  addItem: [uploadMiddleware, addItem],
+  // addItem: [uploadMiddleware, addItem],
   uploadMiddleware,
 };

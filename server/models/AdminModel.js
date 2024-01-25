@@ -25,7 +25,6 @@ const inventorySchema = new Schema({
 });
 
 // Define order schema
-// Define order schema
 const orderSchema = new Schema({
   items: [itemSchema],
   customer: {

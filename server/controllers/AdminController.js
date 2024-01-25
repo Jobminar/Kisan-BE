@@ -109,7 +109,7 @@ const addItem = async (req, res) => {
 
     // Add the item to the inventory with the images
     const newItem = {
-      name,
+      itemname,
       description,
       units,
       costPerUnit,

@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 // Define sub-schema for items (vegetables and fruits)
 const itemSchema = new Schema({
   category: { type: String, required: true },
-  name: { type: String, required: true },
+  itemname: { type: String, required: true },
   units: {
     type: String,
     enum: ["kg", "grams", "dozen", "number"],

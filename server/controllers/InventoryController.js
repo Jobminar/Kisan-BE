@@ -69,6 +69,7 @@ const addItem = async (req, res) => {
           freshFruits: [],
           offerZone: [],
           quickPicks: [],
+          additionals: [],
         });
 
         await inventory.save();

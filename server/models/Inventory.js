@@ -21,6 +21,7 @@ const inventorySchema = new Schema({
   freshFruits: [itemSchema],
   offerZone: [itemSchema],
   quickPicks: [itemSchema],
+  additionals: [itemSchema],
 });
 
 // Create and export the model based on the schema

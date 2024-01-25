@@ -100,20 +100,12 @@ const getInventory = async (req, res) => {
 // Create a controller function for adding an item to the inventory
 const addItem = async (req, res) => {
   try {
-    // Get the admin id and the item type from the params
-    const { adminId, itemType } = req.params;
+    // Get the item type from the params
+    const { itemType } = req.params;
 
     // Get the item data from the body
     const { name, description, units, costPerUnit, discount, quantity } =
       req.body;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
 
     // Check if the item type is valid
     const validItemTypes = [
@@ -140,10 +132,8 @@ const addItem = async (req, res) => {
       itemImage: itemImage ? itemImage.buffer.toString("base64") : null,
     };
 
-    admin.inventory[itemType].push(newItem);
-
-    // Save the admin to the database
-    await admin.save();
+    // Modify this line based on your actual data structure, assuming 'inventory' is available globally
+    getInventory[itemType].push(newItem);
 
     // Send a success response
     res.status(201).json({ message: "Item added successfully" });

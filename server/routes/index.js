@@ -32,35 +32,31 @@ router.put("/bill-details/:id", updateBillDetailsById);
 // Delete a specific bill details entry by ID
 router.delete("/bill-details/:id", deleteBillDetailsById);
 
-// Admin signup
 router.post("/admin/signup", adminController.adminSignup);
 
 // Admin login
 router.post("/admin/login", adminController.adminLogin);
 
 // Get admin inventory
-router.get("/:adminId/inventory", adminController.getInventory);
+router.get("/inventory", InventoryController.getInventory);
 
 // Add item to admin inventory
-router.post("/:adminId/inventory/:itemType/add", adminController.addItem);
-
-// Get admin inventory
-router.get("/:adminId/inventory", InventoryController.getInventory);
-
-// Add item to admin inventory
-router.post("/:adminId/inventory/:itemType/add", InventoryController.addItem);
+router.post("/inventory/:itemType/add", InventoryController.addItem);
 
 // Update item in admin inventory
 router.put(
-  "/:adminId/inventory/:itemType/:itemId/update",
+  "/inventory/:itemType/:itemId/update",
   InventoryController.updateItem
 );
 
 // Delete item from admin inventory
 router.delete(
-  "/:adminId/inventory/:itemType/:itemId/delete",
+  "/inventory/:itemType/:itemId/delete",
   InventoryController.deleteItem
 );
+
+// Get all items in admin inventory
+router.get("/inventory/all", InventoryController.getAllItems);
 
 // Get all orders
 router.get("/admin/:adminId/orders", OrderController.getAllOrders);

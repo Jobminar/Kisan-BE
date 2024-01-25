@@ -4,6 +4,7 @@ import multer from "multer";
 // Assuming you have a storage configuration for Multer
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
 // Create a controller function for getting the inventory
 const getInventory = async (req, res) => {
   try {
@@ -75,8 +76,14 @@ const addItem = async (req, res) => {
         await inventory.save();
       }
 
-      // Modify this line based on your actual data structure
-      inventory[category].push(newItem);
+      if (!category) {
+        // If category is not specified, create a separate record
+        const newCategory = `customCategory_${Date.now()}`;
+        inventory[newCategory] = [newItem];
+      } else {
+        // Modify this line based on your actual data structure
+        inventory[category].push(newItem);
+      }
 
       // Save the inventory to the database
       await inventory.save();

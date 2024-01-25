@@ -7,7 +7,7 @@ import routes from "./routes/index.js";
 import dotenv from "dotenv";
 const app = express();
 const port = process.env.PORT || 3000;
-
+import cors from "cors";
 // Connect to MongoDB
 dotenv.config();
 connect(process.env.MONGO_URL, {
@@ -19,7 +19,7 @@ connect(process.env.MONGO_URL, {
 
 // Middleware
 app.use(bodyParser.json()); // Use bodyParser.json() instead of json()
-
+app.use(cors());
 // Routes
 app.use("/", routes);
 

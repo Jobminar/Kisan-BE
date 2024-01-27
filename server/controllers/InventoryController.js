@@ -27,18 +27,11 @@ const addItem = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
       }
 
-      const {
-        category,
-        itemname,
-        description,
-        units,
-        costPerUnit,
-        discount,
-        quantity,
-      } = req.body;
+      const { category, itemname, description, units, costPerUnit, discount } =
+        req.body;
 
       // Validate required fields
-      if (!category || !itemname || !units || !costPerUnit || !quantity) {
+      if (!category || !itemname || !units || !costPerUnit) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -56,7 +49,6 @@ const addItem = async (req, res) => {
         units,
         costPerUnit,
         discount,
-        quantity,
         itemImage: itemImage ? itemImage.buffer.toString("base64") : "",
       };
 
@@ -80,8 +72,7 @@ const updateItem = async (req, res) => {
       !req.body.category ||
       !req.body.itemname ||
       !req.body.units ||
-      !req.body.costPerUnit ||
-      !req.body.quantity
+      !req.body.costPerUnit
     ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -100,7 +91,6 @@ const updateItem = async (req, res) => {
     existingItem.units = req.body.units;
     existingItem.costPerUnit = req.body.costPerUnit;
     existingItem.discount = req.body.discount || 0;
-    existingItem.quantity = req.body.quantity;
 
     // Check if there is a new itemImage
     if (req.file) {

@@ -9,7 +9,7 @@ const itemSchema = new Schema({
   },
   costPerUnit: { type: Number, required: true },
   discount: { type: Number, default: 0 },
-  quantity: { type: Number, default: 0 },
+
   description: String,
   itemImage: { type: String },
 });

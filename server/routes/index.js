@@ -44,7 +44,9 @@ router.post("/admin/login", adminController.adminLogin);
 
 // Define routes for getting inventory and adding an item
 router.get("/inventory", InventoryController.getInventory);
-router.post("/addItem", InventoryController.addItem);
+router.post("/inventory", InventoryController.addItem);
+router.put("/inventory/:itemId", InventoryController.updateItem);
+router.delete("/inventory/:itemId", InventoryController.deleteItem);
 // Update item in admin inventory (if needed)
 
 // Get all orders

@@ -5,7 +5,6 @@ const itemSchema = new Schema({
   itemname: { type: String, required: true },
   units: {
     type: String,
-    default: "kg",
   },
   costPerUnit: { type: Number, required: true },
   discount: { type: Number, default: 0 },

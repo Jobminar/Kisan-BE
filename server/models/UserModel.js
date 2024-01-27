@@ -1,10 +1,8 @@
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
-  fullname: String,
-  email: String,
-  password: String,
   phoneNumber: String,
+  password: String,
 });
 
 const UserModel = model("User", userSchema);

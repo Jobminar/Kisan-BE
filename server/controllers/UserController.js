@@ -2,16 +2,16 @@
 import { hash, verify } from "argon2";
 import UserModel from "../models/UserModel.js";
 
-// Create a signup controller
+// Create a signup controller with phoneNumber
 const signup = async (req, res) => {
   try {
     // Get the user input
-    const { fullname, email, password, phoneNumber } = req.body;
+    const { phoneNumber, password } = req.body;
 
-    // Check if the email already exists
-    const user = await findOne({ email });
+    // Check if the phoneNumber already exists
+    const user = await UserModel.findOne({ phoneNumber });
     if (user) {
-      return res.status(400).json({ message: "Email already taken" });
+      return res.status(400).json({ message: "Phone number already taken" });
     }
 
     // Hash the password
@@ -19,8 +19,6 @@ const signup = async (req, res) => {
 
     // Create a new user
     const newUser = new UserModel({
-      fullname,
-      email,
       password: hashedPassword,
       phoneNumber,
     });
@@ -37,16 +35,16 @@ const signup = async (req, res) => {
   }
 };
 
-// Create a login controller
+// Create a login controller with phoneNumber
 const login = async (req, res) => {
   try {
     // Get the user input
-    const { email, password } = req.body;
+    const { phoneNumber, password } = req.body;
 
-    // Check if the email exists
-    const user = await findOne({ email });
+    // Check if the phoneNumber exists
+    const user = await UserModel.findOne({ phoneNumber });
     if (!user) {
-      return res.status(404).json({ message: "Email not found" });
+      return res.status(404).json({ message: "Phone number not found" });
     }
 
     // Verify the password
@@ -55,16 +53,8 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    // Send a success response with user details
-    res.status(200).json({
-      message: "User logged in successfully",
-      user: {
-        fullname: user.fullname,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        // Add any other user details you want to include
-      },
-    });
+    // Send a success response
+    res.status(200).json({ message: "User logged in successfully" });
   } catch (error) {
     // Handle any errors
     console.error(error);

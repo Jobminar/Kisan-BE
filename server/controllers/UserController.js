@@ -54,4 +54,16 @@ const login = async (req, res) => {
   }
 };
 
-export { signup, login };
+const getAllUsers = async (req, res) => {
+  try {
+    // Fetch all users excluding the 'password' field
+    const users = await User.find({}, { password: 0 });
+
+    // Send the user data as JSON response
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export { signup, login, getAllUsers };

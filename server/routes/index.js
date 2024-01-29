@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import CartController from "../controllers/CartController.js";
-import { signup, login } from "../controllers/UserController.js";
+import { signup, login, getAllUsers } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import SelectAddressController from "../controllers/SelectAddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
@@ -18,6 +18,8 @@ const upload = multer({ storage: storage });
 const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
+router.get("/users", getAllUsers);
+
 // Add more routes as needed
 // Create a new bill details entry
 router.post("/bill-details", createBillDetails);
@@ -85,8 +87,19 @@ router.delete("/addresses/:addressId", SelectAddressController.deleteAddress);
 // Route for getting an address by ID
 router.get("/addresses/:addressId", SelectAddressController.getAddressById);
 
-router.post("/add", CartController.addToCart);
-router.post("/remove", CartController.removeFromCart);
-router.post("/update", CartController.updateCartItem);
-router.get("/:userId", CartController.getCart);
+// Create a new item in the cart
+router.post("/cart", CartController.createCartItem);
+
+// Get all items in the cart
+router.get("/cart", CartController.getAllCartItems);
+
+// Get a specific item from the cart by ID
+router.get("/cart/user/:userId", CartController.getCartItemsByUserId);
+
+// Update a specific item in the cart by ID
+router.put("/cart/:id", CartController.updateCartItem);
+
+// Delete a specific item from the cart by ID
+router.delete("/cart/:id", CartController.deleteCartItem);
+
 export default router;

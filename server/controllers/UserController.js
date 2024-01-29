@@ -1,66 +1,57 @@
-// Import the required modules
-import { hash, verify } from "argon2";
-import UserModel from "../models/UserModel.js";
+// controllers/userController.js
+import User from "../models/UserModel.js";
 
-// Create a signup controller with phoneNumber
+// User signup
 const signup = async (req, res) => {
   try {
-    // Get the user input
-    const { phoneNumber, password } = req.body;
+    const { userName, phoneNumber, email, password } = req.body;
 
-    // Check if the phoneNumber already exists
-    const user = await UserModel.findOne({ phoneNumber });
-    if (user) {
-      return res.status(400).json({ message: "Phone number already taken" });
+    // Check if the email is already registered
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Email is already registered" });
     }
 
-    // Hash the password
-    const hashedPassword = await hash(password);
-
-    // Create a new user
-    const newUser = new UserModel({
-      password: hashedPassword,
+    // Create a new user using the User model
+    const newUser = await User.create({
+      userName,
       phoneNumber,
+      email,
+      password,
     });
 
-    // Save the user to the database
-    await newUser.save();
-
-    // Send a success response
-    res.status(201).json({ message: "User created successfully" });
+    // Send the newly created user as JSON response with a 201 status code
+    res.status(201).json(newUser);
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(400).json({ error: "Bad Request" });
   }
 };
 
-// Create a login controller with phoneNumber
+// User login
 const login = async (req, res) => {
   try {
-    // Get the user input
-    const { phoneNumber, password } = req.body;
+    const { email, password } = req.body;
 
-    // Check if the phoneNumber exists
-    const user = await UserModel.findOne({ phoneNumber });
+    // Check if the user exists with the provided email
+    const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(404).json({ message: "Phone number not found" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Verify the password
-    const validPassword = await verify(user.password, password);
-    if (!validPassword) {
-      return res.status(401).json({ message: "Invalid password" });
+    // Check if the provided password matches the stored password
+    const isPasswordValid = user.password === password;
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Send a success response
-    res.status(200).json({ message: "User logged in successfully" });
+    // Send a success message as JSON response
+    res.json({ message: "Login successful" });
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(400).json({ error: "Bad Request" });
   }
 };
 
-// Export the controllers
 export { signup, login };

@@ -72,45 +72,38 @@ const updateItem = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Use the multer middleware directly in the controller
-    upload.single("itemImage")(req, res, async (err) => {
-      if (err) {
-        console.error(err);
+    // Check if base64 string is provided in the request body
+    const { itemImage } = req.body;
 
-        if (err instanceof multer.MulterError) {
-          return res.status(400).json({ message: "File upload error" });
-        }
+    // Find the item by ID
+    const existingItem = await ItemModel.findById(itemId);
 
-        return res.status(500).json({ message: "Internal server error" });
-      }
+    if (!existingItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
 
-      // Find the item by ID
-      const existingItem = await ItemModel.findById(itemId);
+    // Update item details
+    existingItem.category = category;
+    existingItem.itemname = itemname;
+    existingItem.description = req.body.description || "";
+    existingItem.units = units;
+    existingItem.costPerUnit = costPerUnit;
+    existingItem.discount = req.body.discount || 0;
 
-      if (!existingItem) {
-        return res.status(404).json({ message: "Item not found" });
-      }
+    // Check if a new itemImage is provided as a base64 string
+    if (itemImage) {
+      existingItem.itemImage = itemImage;
+    } else if (req.file) {
+      // If no base64 string is provided, check if a file is uploaded
+      existingItem.itemImage = req.file.buffer.toString("base64");
+    }
 
-      // Update item details
-      existingItem.category = category;
-      existingItem.itemname = itemname;
-      existingItem.description = req.body.description || "";
-      existingItem.units = units;
-      existingItem.costPerUnit = costPerUnit;
-      existingItem.discount = req.body.discount || 0;
+    // Save the updated item to the database
+    await existingItem.save();
 
-      // Check if there is a new itemImage
-      if (req.file) {
-        existingItem.itemImage = req.file.buffer.toString("base64");
-      }
-
-      // Save the updated item to the database
-      await existingItem.save();
-
-      res
-        .status(200)
-        .json({ message: "Item updated successfully", item: existingItem });
-    });
+    res
+      .status(200)
+      .json({ message: "Item updated successfully", item: existingItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error updating item in inventory" });

@@ -82,24 +82,30 @@ const updateItem = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
+    // Log existing item before update
+    console.log("Existing Item Before Update:", existingItem);
+
     // Update item fields based on user input
-    Object.keys(updates).forEach((key) => {
-      if (key === "itemImage") {
-        // Handle image updates separately
-        console.log("Updating Item Image");
-        existingItem.itemImage = updates[key];
-      } else {
-        console.log(`Updating ${key}`);
-        existingItem[key] = updates[key];
-      }
-    });
+    Object.assign(existingItem, updates);
 
-    await existingItem.save();
+    try {
+      // Attempt to save the updated item
+      const updatedItem = await existingItem.save();
 
-    console.log("Item updated successfully");
-    res
-      .status(200)
-      .json({ message: "Item updated successfully", item: existingItem });
+      // Log existing item after update
+      console.log("Existing Item After Update:", updatedItem);
+
+      console.log("Item updated successfully");
+      res
+        .status(200)
+        .json({ message: "Item updated successfully", item: updatedItem });
+    } catch (error) {
+      // Log validation errors (if any)
+      console.log("Validation Error:", error.errors);
+      console.error("Error saving updated item:", error);
+      console.log("Error updating item in inventory");
+      res.status(500).json({ message: "Error updating item in inventory" });
+    }
   } catch (error) {
     if (error.code === "RequestHeaderFieldsTooLarge") {
       // Handle 431 error here

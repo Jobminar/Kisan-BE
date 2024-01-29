@@ -46,7 +46,7 @@ router.post("/admin/login", adminController.adminLogin);
 // Define routes for getting inventory and adding an item
 router.get("/inventory", InventoryController.getInventory);
 router.post("/addItem", InventoryController.addItem);
-router.patch(
+router.put(
   "/updateItem/:itemId",
   upload.single("itemImage"),
   InventoryController.updateItem

@@ -1,17 +1,13 @@
 import { Schema, model } from "mongoose";
 
 const itemSchema = new Schema({
-  category: { type: String, required: false },
-  itemname: { type: String, required: true },
-  units: {
-    type: String,
-    default: "kg",
-  },
-  costPerUnit: { type: Number, required: true },
-  discount: { type: Number, default: 0 },
-
+  category: String,
+  itemname: { type: String, required: false }, // Make itemname optional
+  units: String,
+  costPerUnit: { type: Number, required: false }, // Make costPerUnit optional
+  discount: Number,
   description: String,
-  itemImage: { type: String },
+  itemImage: String,
 });
 
 const ItemModel = model("Item", itemSchema);

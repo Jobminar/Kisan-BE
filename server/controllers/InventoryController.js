@@ -62,51 +62,54 @@ const addItem = async (req, res) => {
     res.status(500).json({ message: "Error adding item to inventory" });
   }
 };
-
 const updateItem = async (req, res) => {
   try {
-    // Validate required fields in the request body
-    const { itemId, category, itemname, units, costPerUnit } = req.body;
+    const { itemId } = req.params;
+    const updates = req.body;
 
-    if (!itemId || !category || !itemname || !units || !costPerUnit) {
+    console.log("Update Item Request - Item ID:", itemId);
+    console.log("Update Item Request - Updates:", updates);
+
+    if (!itemId || !updates) {
+      console.log("Missing required fields");
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Check if base64 string is provided in the request body
-    const { itemImage } = req.body;
-
-    // Find the item by ID
     const existingItem = await ItemModel.findById(itemId);
 
     if (!existingItem) {
+      console.log("Item not found");
       return res.status(404).json({ message: "Item not found" });
     }
 
-    // Update item details
-    existingItem.category = category;
-    existingItem.itemname = itemname;
-    existingItem.description = req.body.description || "";
-    existingItem.units = units;
-    existingItem.costPerUnit = costPerUnit;
-    existingItem.discount = req.body.discount || 0;
+    // Update item fields based on user input
+    Object.keys(updates).forEach((key) => {
+      if (key === "itemImage") {
+        // Handle image updates separately
+        console.log("Updating Item Image");
+        existingItem.itemImage = updates[key];
+      } else {
+        console.log(`Updating ${key}`);
+        existingItem[key] = updates[key];
+      }
+    });
 
-    // Check if a new itemImage is provided as a base64 string
-    if (itemImage) {
-      existingItem.itemImage = itemImage;
-    } else if (req.file) {
-      // If no base64 string is provided, check if a file is uploaded
-      existingItem.itemImage = req.file.buffer.toString("base64");
-    }
-
-    // Save the updated item to the database
     await existingItem.save();
 
+    console.log("Item updated successfully");
     res
       .status(200)
       .json({ message: "Item updated successfully", item: existingItem });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error updating item in inventory" });
+    if (error.code === "RequestHeaderFieldsTooLarge") {
+      // Handle 431 error here
+      console.log("Request Header Fields Too Large");
+      res.status(431).json({ message: "Request Header Fields Too Large" });
+    } else {
+      console.error(error);
+      console.log("Error updating item in inventory");
+      res.status(500).json({ message: "Error updating item in inventory" });
+    }
   }
 };
 

@@ -1,11 +1,10 @@
 import { Router } from "express";
-const router = Router();
+import multer from "multer";
 import CartController from "../controllers/CartController.js";
 import { signup, login } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import SelectAddressController from "../controllers/SelectAddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
-
 import OrderController from "../controllers/OrderController.js";
 import {
   createBillDetails,
@@ -14,7 +13,9 @@ import {
   updateBillDetailsById,
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
 // Add more routes as needed
@@ -45,7 +46,11 @@ router.post("/admin/login", adminController.adminLogin);
 // Define routes for getting inventory and adding an item
 router.get("/inventory", InventoryController.getInventory);
 router.post("/addItem", InventoryController.addItem);
-router.put("/updateItem", InventoryController.updateItem);
+router.patch(
+  "/updateItem/:itemId",
+  upload.single("itemImage"),
+  InventoryController.updateItem
+);
 router.delete("/inventory/:itemId", InventoryController.deleteItem);
 // Update item in admin inventory (if needed)
 

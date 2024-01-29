@@ -7,7 +7,7 @@ import pkg from "body-parser";
 const { json } = pkg;
 const app = express();
 const port = process.env.PORT || 3000;
-
+import compression from "compression";
 // Load environment variables
 config();
 
@@ -19,7 +19,7 @@ connect(process.env.MONGO_URL)
 // Middleware
 app.use(json()); // Correct usage of bodyParser.json()
 app.use(cors());
-
+app.use(compression());
 // Routes
 app.use("/", routes);
 

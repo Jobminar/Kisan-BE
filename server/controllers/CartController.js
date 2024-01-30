@@ -68,10 +68,28 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
+// Get cart items with payment status set to true
+const getCartItemsByPaymentStatus = async (req, res) => {
+  try {
+    const cartItems = await CartModel.find({ payment: true });
+
+    if (cartItems.length > 0) {
+      res.status(200).json(cartItems);
+    } else {
+      res
+        .status(404)
+        .json({ message: "No items found with payment status set to true" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   createCartItem,
   getAllCartItems,
   getCartItemsByUserId,
   updateCartItem,
   deleteCartItem,
+  getCartItemsByPaymentStatus,
 };

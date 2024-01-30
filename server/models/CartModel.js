@@ -11,6 +11,7 @@ const cartSchema = new Schema({
   userId: String,
   payment: Boolean,
   count: Number,
+  orderStatus: { type: String, required: true },
 });
 
 const CartModel = model("Cart", cartSchema);

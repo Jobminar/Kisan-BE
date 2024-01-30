@@ -94,7 +94,7 @@ router.post("/cart", CartController.createCartItem);
 router.get("/cart", CartController.getAllCartItems);
 
 // Get cart items by userId
-router.get("/cart/user/:userId", CartController.getCartItemsByUserId);
+router.get("/cart/:userId", CartController.getCartItemsByUserId);
 
 // Delete a specific item from the cart by ID
 router.delete("/cart/:id", CartController.deleteCartItemsByUserId);

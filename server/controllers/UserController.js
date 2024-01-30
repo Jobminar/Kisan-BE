@@ -1,6 +1,6 @@
 // controllers/userController.js
 import User from "../models/UserModel.js";
-
+import argon2 from "argon2";
 // User signup
 const signup = async (req, res) => {
   try {
@@ -15,12 +15,14 @@ const signup = async (req, res) => {
         .json({ error: "phoneNumber is already registered" });
     }
 
-    // Create a new user using the User model
+    // Hash the password using argon2
+    const hashedPassword = await argon2.hash(password);
+
+    // Create a new user using the User model, storing the hashed password
     const newUser = await User.create({
       userName,
       phoneNumber,
-
-      password,
+      password: hashedPassword,
     });
 
     // Send the newly created user as JSON response with a 201 status code
@@ -35,22 +37,25 @@ const login = async (req, res) => {
   try {
     const { phoneNumber, password } = req.body;
 
-    // Check if the user exists with the provided phoneNumber
+    // Find the user with the provided phoneNumber
     const user = await User.findOne({ phoneNumber });
 
     if (!user) {
       return res.status(401).json({ error: "Invalid phoneNumber or password" });
     }
 
-    // Check if the provided password matches the stored password
-    const isPasswordValid = user.password === password;
+    // Verify the provided password against the stored hashed password
+    const isPasswordValid = await argon2.verify(user.password, password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid phoneNumber or password" });
     }
 
-    // If login is successful, send a custom message and the whole user record as JSON response
-    res.json({ message: "Login successful", user });
+    // If login is successful, send a custom message and the user record (excluding password)
+    res.json({
+      message: "Login successful",
+      user: user.toJSON({ exclude: "password" }),
+    });
   } catch (error) {
     res.status(400).json({ error: "Bad Request" });
   }

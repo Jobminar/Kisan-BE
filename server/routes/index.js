@@ -87,19 +87,18 @@ router.delete("/addresses/:addressId", SelectAddressController.deleteAddress);
 // Route for getting an address by ID
 router.get("/addresses/:addressId", SelectAddressController.getAddressById);
 
-// Create a new item in the cart
+// Get all items in the cart
 router.post("/cart", CartController.createCartItem);
 
 // Get all items in the cart
-// router.get("/cart", CartController.getAllCartItems);
+router.get("/cart", CartController.getAllCartItems);
 
-// Get a specific item from the cart by ID
+// Get cart items by userId
 router.get("/cart/user/:userId", CartController.getCartItemsByUserId);
 
-// Update a specific item in the cart by ID
-router.put("/cart/:id", CartController.updateCartItem);
-
 // Delete a specific item from the cart by ID
-router.delete("/cart/:id", CartController.deleteCartItem);
-router.get("/cart/payment/true", CartController.getCartItemsByPaymentStatus);
+router.delete("/cart/:id", CartController.deleteCartItemsByUserId);
+
+// Get cart items by payment status (true)
+router.get("/cart/payment/true", CartController.getCartItemsByOrderStatus);
 export default router;

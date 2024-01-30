@@ -4,20 +4,22 @@ import User from "../models/UserModel.js";
 // User signup
 const signup = async (req, res) => {
   try {
-    const { userName, phoneNumber, email, password } = req.body;
+    const { userName, phoneNumber, password } = req.body;
 
-    // Check if the email is already registered
-    const existingUser = await User.findOne({ email });
+    // Check if the phoneNumber is already registered
+    const existingUser = await User.findOne({ phoneNumber });
 
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered" });
+      return res
+        .status(400)
+        .json({ error: "phoneNumber is already registered" });
     }
 
     // Create a new user using the User model
     const newUser = await User.create({
       userName,
       phoneNumber,
-      email,
+
       password,
     });
 
@@ -31,24 +33,24 @@ const signup = async (req, res) => {
 // User login
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phoneNumber, password } = req.body;
 
-    // Check if the user exists with the provided email
-    const user = await User.findOne({ email });
+    // Check if the user exists with the provided phoneNumber
+    const user = await User.findOne({ phoneNumber });
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Invalid phoneNumber or password" });
     }
 
     // Check if the provided password matches the stored password
     const isPasswordValid = user.password === password;
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Invalid phoneNumber or password" });
     }
 
-    // Send a success message as JSON response
-    res.json({ message: "Login successful" });
+    // If login is successful, send a custom message and the whole user record as JSON response
+    res.json({ message: "Login successful", user });
   } catch (error) {
     res.status(400).json({ error: "Bad Request" });
   }

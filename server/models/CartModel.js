@@ -1,5 +1,3 @@
-import { Schema, model } from "mongoose";
-
 const cartSchema = new Schema({
   category: String,
   itemname: { type: String, required: false },
@@ -11,7 +9,7 @@ const cartSchema = new Schema({
   userId: String,
   payment: Boolean,
   count: Number,
-  orderStatus: { type: String, required: true },
+  orderStatus: String,
 });
 
 const CartModel = model("Cart", cartSchema);

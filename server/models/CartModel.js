@@ -31,6 +31,9 @@ const cartSchema = new Schema({
   count: {
     type: Number,
   },
+  price: {
+    type: Number,
+  },
   orderStatus: {
     type: String,
   },

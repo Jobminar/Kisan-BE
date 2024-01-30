@@ -18,6 +18,7 @@ const createCartItem = async (req, res) => {
       description,
       userId,
       payment,
+      price,
       count,
       orderStatus,
     } = req.body;
@@ -44,6 +45,7 @@ const createCartItem = async (req, res) => {
       itemImage,
       userId,
       payment,
+      price,
       count,
       orderStatus,
     });

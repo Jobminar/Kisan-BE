@@ -101,6 +101,6 @@ router.delete("/cart/:id", CartController.deleteCartItemsByUserId);
 
 // Get cart items by payment status (true)
 
-router.get("/cart/payment-yes", CartController.getCartItemsByOrderStatus);
+router.get("/cart/payment-yes", CartController.getCartItemsByPaymentStatus);
 router.put("/cart/:orderId", CartController.updateOrderStatus);
 export default router;

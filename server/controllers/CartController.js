@@ -79,7 +79,8 @@ const getCartItemsByUserId = async (req, res) => {
   }
 };
 
-const getCartItemsByOrderStatus = async (req, res) => {
+// GET controller logic to retrieve all cart items with payment value "yes"
+const getCartItemsByPaymentStatus = async (req, res) => {
   try {
     // Modify the query to filter cart items by payment value "yes"
     const cartItems = await CartModel.find({ payment: "yes" });
@@ -135,7 +136,7 @@ export default {
   createCartItem,
   getAllCartItems,
   getCartItemsByUserId,
-  getCartItemsByOrderStatus,
+  getCartItemsByPaymentStatus,
   deleteCartItemsByUserId,
   updateOrderStatus,
   upload,

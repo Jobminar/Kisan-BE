@@ -79,18 +79,6 @@ const getCartItemsByUserId = async (req, res) => {
   }
 };
 
-// GET controller logic to retrieve all cart items with payment value "yes"
-const getCartItemsByPaymentStatus = async (req, res) => {
-  try {
-    // Modify the query to filter cart items by payment value "yes"
-    const cartItems = await CartModel.find({ payment: "yes" });
-
-    res.status(200).json(cartItems);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 const updateOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params; // Assuming you have an orderId to identify the cart item
@@ -136,7 +124,6 @@ export default {
   createCartItem,
   getAllCartItems,
   getCartItemsByUserId,
-  getCartItemsByPaymentStatus,
   deleteCartItemsByUserId,
   updateOrderStatus,
   upload,

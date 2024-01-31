@@ -3,6 +3,7 @@ import { Schema, model } from "mongoose";
 
 // Define the address schema
 const addressSchema = new Schema({
+  userId: String,
   AddressType: String,
   House_no: String,
   block: String,

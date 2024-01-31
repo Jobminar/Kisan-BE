@@ -6,6 +6,7 @@ const addAddress = async (req, res) => {
   try {
     // Get the address details from the request body
     const {
+      userId,
       title,
       apartments,
       address,
@@ -18,6 +19,7 @@ const addAddress = async (req, res) => {
 
     // Create a new address document
     const newAddress = new SelectAddressModel({
+      userId,
       title,
       apartments,
       address,
@@ -44,14 +46,14 @@ const addAddress = async (req, res) => {
 const updateAddress = async (req, res) => {
   try {
     // Get the address ID from the request parameters
-    const { addressId } = req.params;
+    const { userId } = req.params;
 
     // Get the updated address details from the request body
     const updatedAddress = req.body;
 
     // Find the address by ID and update it
     const result = await SelectAddressModel.findByIdAndUpdate(
-      addressId,
+      userId,
       updatedAddress,
       { new: true }
     );
@@ -74,7 +76,7 @@ const updateAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
   try {
     // Get the address ID from the request parameters
-    const { addressId } = req.params;
+    const { userId } = req.params;
 
     // Find the address by ID and delete it
     const result = await SelectAddressModel.findByIdAndDelete(addressId);

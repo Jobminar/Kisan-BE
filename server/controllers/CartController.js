@@ -108,12 +108,26 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 // DELETE controller logic to delete cart items by userId
-const deleteCartItemsByUserId = async (req, res) => {
+const deleteCartItemById = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const deletedItems = await CartModel.deleteMany({ userId });
+    const itemId = req.params.itemId; // Assuming you have an itemId to identify the cart item
+
+    // Check if itemId is provided
+    if (!itemId) {
+      return res.status(400).json({
+        error: "itemId is required in the request parameters",
+      });
+    }
+
+    // Delete the cart item with the specified ID
+    const deletedItem = await CartModel.findByIdAndDelete(itemId);
+
+    if (!deletedItem) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
     res.status(200).json({
-      message: `Deleted ${deletedItems.deletedCount} items for user ${userId}`,
+      message: `Deleted item with ID: ${itemId}`,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -124,7 +138,7 @@ export default {
   createCartItem,
   getAllCartItems,
   getCartItemsByUserId,
-  deleteCartItemsByUserId,
+  deleteCartItemById,
   updateOrderStatus,
   upload,
 };

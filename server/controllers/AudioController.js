@@ -12,7 +12,15 @@ async function saveAudioData(req, res) {
         return res.status(500).json({ success: false, error: err.message });
       }
 
-      const { userId, audioData } = req.body;
+      const { userId } = req.body;
+      const audioData = req.file.buffer; // Assuming audioData is in the file buffer
+
+      if (!userId || !audioData) {
+        return res
+          .status(400)
+          .json({ success: false, error: "userId and audioData are required" });
+      }
+
       const audio = new Audio({ userId, audioData });
       await audio.save();
       return res.json({ success: true, message: "Audio saved successfully" });

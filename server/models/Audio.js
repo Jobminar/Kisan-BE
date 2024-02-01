@@ -2,7 +2,7 @@
 import { Schema, model } from "mongoose";
 
 const audioSchema = new Schema({
-  userId: { type: String },
+  userId: { type: String, required: false },
   audioData: {
     type: Buffer,
     required: true,

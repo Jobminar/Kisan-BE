@@ -1,19 +1,20 @@
 import Audio from "../models/Audio.js";
-import multer, { memoryStorage } from "multer";
+import multer from "multer";
 
-// Function to configure Multer middleware for in-memory storage
-const configureMulter = () => {
-  const storage = memoryStorage();
-  return multer({ storage: storage });
-};
-
-const upload = configureMulter().single("audio");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single("audio");
 
 async function saveAudioData(req, res) {
   try {
     upload(req, res, async (err) => {
       if (err) {
         return res.status(500).json({ success: false, error: err.message });
+      }
+
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Audio file not provided" });
       }
 
       const { userId } = req.body;

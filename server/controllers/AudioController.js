@@ -18,13 +18,16 @@ async function saveAudioData(req, res) {
       }
 
       const { userId } = req.body;
-      const audioData = req.file.buffer; // Assuming audioData is in the file buffer
+      const audioDataBlob = req.file.buffer; // Assuming audioData is in the file buffer
 
-      if (!userId || !audioData) {
+      if (!userId || !audioDataBlob) {
         return res
           .status(400)
           .json({ success: false, error: "userId and audioData are required" });
       }
+
+      // Convert Blob to a base64-encoded string
+      const audioData = audioDataBlob.toString("base64");
 
       const audio = new Audio({ userId, audioData });
       await audio.save();

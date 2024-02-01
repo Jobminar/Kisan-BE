@@ -110,12 +110,12 @@ const updateOrderStatus = async (req, res) => {
 // DELETE controller logic to delete cart items by userId
 const deleteCartItemById = async (req, res) => {
   try {
-    const itemId = req.params.itemId; // Assuming you have an itemId to identify the cart item
+    const itemId = req.body.itemId; // Assuming you pass itemId in the request body
 
     // Check if itemId is provided
     if (!itemId) {
       return res.status(400).json({
-        error: "itemId is required in the request parameters",
+        error: "itemId is required in the request body",
       });
     }
 

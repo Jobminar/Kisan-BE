@@ -13,6 +13,7 @@ import {
   updateBillDetailsById,
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
+import AudioController from "../controllers/AudioController.js";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
@@ -102,4 +103,10 @@ router.delete("/cart/delete", CartController.deleteCartItemById);
 // Get cart items by payment status (true)
 //cart item
 router.put("/cart/:orderId", CartController.updateOrderStatus);
+
+// Upload audio route
+router.post("/uploadaudio", AudioController.saveAudioData);
+
+// Get audio by userId route
+router.get("/getaudio", AudioController.getAudioByUserId);
 export default router;

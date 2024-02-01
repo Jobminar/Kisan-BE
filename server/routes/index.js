@@ -104,9 +104,19 @@ router.delete("/cart/delete", CartController.deleteCartItemById);
 //cart item
 router.put("/cart/:orderId", CartController.updateOrderStatus);
 
-// Upload audio route
+// Upload audio route (for users)
 router.post("/uploadaudio", AudioController.saveAudioData);
 
-// Get audio by userId route
+// Get audio by userId route (for users)
 router.get("/getaudio", AudioController.getAudioByUserId);
+
+// Get all audio route (for admin)
+router.get("/getAllaudio", AudioController.getAllAudioByAdmin);
+
+// Post audio route by admin
+router.post("/postByAdminaudio", AudioController.postAudioByAdmin);
+
+// Delete audio by userId route
+router.delete("/deleteaudio", AudioController.deleteAudioByUserId);
+router.delete("/deletebyid", AudioController.deleteAudioById);
 export default router;

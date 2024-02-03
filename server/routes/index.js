@@ -3,7 +3,7 @@ import multer from "multer";
 import CartController from "../controllers/CartController.js";
 import { signup, login, getAllUsers } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
-import SelectAddressController from "../controllers/SelectAddressController.js";
+import AddressController from "../controllers/AddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
 import OrderController from "../controllers/OrderController.js";
 import {
@@ -77,16 +77,22 @@ router.delete(
   "/admin/:adminId/orders/:orderId/delete",
   OrderController.deleteOrder
 );
-router.post("/addresses", SelectAddressController.addAddress);
+router.post("/addresses", AddressController.createAddress);
 
-// Route for updating an address by ID
-router.put("/addressbyId", SelectAddressController.updateAddress);
+// Route to get addresses by userId
+router.post("/addresses/getByUserId", AddressController.getAddressesByUserId);
 
-// Route for deleting an address by ID
-router.delete("/addressbyId", SelectAddressController.deleteAddress);
+// Route to delete an address by userId
+router.delete(
+  "/addresses/deleteByUserId",
+  AddressController.deleteAddressByUserId
+);
 
-// Route for getting an address by ID
-router.get("/addressbyId", SelectAddressController.getAddressById);
+// Route to update an address by userId
+router.put(
+  "/addresses/updateByUserId",
+  AddressController.updateAddressByUserId
+);
 
 // Get all items in the cart
 router.post("/cart", CartController.createCartItem);

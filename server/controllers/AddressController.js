@@ -15,10 +15,19 @@ const createAddress = async (req, res) => {
   }
 };
 
-// Get all addresses
-const getAllAddresses = async (_req, res) => {
+// Get addresses by userId
+const getAddressesByUserId = async (req, res) => {
   try {
-    const addresses = await AddressModel.find();
+    const { userId } = req.body;
+
+    // Validate userId
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
+    // Retrieve addresses by userId
+    const addresses = await AddressModel.find({ userId });
+
     res.status(200).json(addresses);
   } catch (error) {
     console.error(error);
@@ -26,65 +35,68 @@ const getAllAddresses = async (_req, res) => {
   }
 };
 
-// Get a single address by ID
-const getAddressById = async (req, res) => {
+// Delete an address by userId
+const deleteAddressByUserId = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId, addressId } = req.body;
 
-    // Validate userId
-    if (!userId) {
-      return res
-        .status(400)
-        .json({ message: "User ID is required in the request body." });
+    // Validate userId and addressId
+    if (!userId || !addressId) {
+      return res.status(400).json({
+        message: "Both User ID and Address ID are required for deletion.",
+      });
     }
 
-    // Retrieve the address by userId
-    const address = await AddressModel.findOne({ userId });
-
-    if (!address) {
-      return res.status(404).json({ message: "Address not found" });
-    }
-
-    res.status(200).json(address);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Update an address by ID
-const updateAddressById = async (req, res) => {
-  try {
-    const updatedAddress = await AddressModel.findOneAndUpdate(
-      { userId: req.body.userId },
-      req.body,
-      { new: true }
-    );
-    if (!updatedAddress) {
-      return res.status(404).json({ message: "Address not found" });
-    }
-    res.status(200).json({
-      message: "Address updated successfully",
-      address: updatedAddress,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Delete an address by ID
-const deleteAddressById = async (req, res) => {
-  try {
+    // Find and delete the address by userId and addressId
     const deletedAddress = await AddressModel.findOneAndDelete({
-      userId: req.body.userId,
+      userId,
+      _id: addressId,
     });
+
     if (!deletedAddress) {
-      return res.status(404).json({ message: "Address not found" });
+      return res
+        .status(404)
+        .json({ message: "Address not found for the specified user." });
     }
+
     res.status(200).json({
       message: "Address deleted successfully",
-      address: deletedAddress,
+      deletedAddress,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+// Update an address by userId
+const updateAddressByUserId = async (req, res) => {
+  try {
+    const { userId, addressId, ...updateData } = req.body;
+
+    // Validate userId and addressId
+    if (!userId || !addressId) {
+      return res.status(400).json({
+        message: "Both User ID and Address ID are required for update.",
+      });
+    }
+
+    // Find and update the address by userId and addressId
+    const updatedAddress = await AddressModel.findOneAndUpdate(
+      { userId, _id: addressId },
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedAddress) {
+      return res
+        .status(404)
+        .json({ message: "Address not found for the specified user." });
+    }
+
+    res.status(200).json({
+      message: "Address updated successfully",
+      updatedAddress,
     });
   } catch (error) {
     console.error(error);
@@ -93,10 +105,9 @@ const deleteAddressById = async (req, res) => {
 };
 
 // Export the address controllers
-export {
+export default {
   createAddress,
-  getAllAddresses,
-  getAddressById,
-  updateAddressById,
-  deleteAddressById,
+  getAddressesByUserId,
+  deleteAddressByUserId,
+  updateAddressByUserId,
 };

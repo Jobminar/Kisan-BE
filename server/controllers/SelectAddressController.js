@@ -1,5 +1,5 @@
 // Import the SelectAddressModel
-import SelectAddressModel from "../models/SelectAddressModel.js";
+import AddressModel from "../models/AddressModel.js";
 
 // Create a controller function for adding a new address
 const addAddress = async (req, res) => {
@@ -18,7 +18,7 @@ const addAddress = async (req, res) => {
     } = req.body;
 
     // Create a new address document
-    const newAddress = new SelectAddressModel({
+    const newAddress = new AddressModel({
       userId,
       title,
       apartments,
@@ -52,7 +52,7 @@ const updateAddress = async (req, res) => {
     const updatedAddress = req.body;
 
     // Find the address by ID and update it
-    const result = await SelectAddressModel.findByIdAndUpdate(
+    const result = await AddressModel.findByIdAndUpdate(
       userId,
       updatedAddress,
       { new: true }
@@ -79,7 +79,7 @@ const deleteAddress = async (req, res) => {
     const { userId } = req.params;
 
     // Find the address by ID and delete it
-    const result = await SelectAddressModel.findByIdAndDelete(addressId);
+    const result = await AddressModel.findByIdAndDelete(userId);
 
     // Check if the address was found and deleted
     if (!result) {
@@ -102,7 +102,7 @@ const getAddressById = async (req, res) => {
     const { addressId } = req.params;
 
     // Find the address by ID
-    const address = await SelectAddressModel.findById(addressId);
+    const address = await AddressModel.findById(addressId);
 
     // Check if the address was found
     if (!address) {

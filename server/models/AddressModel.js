@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 
-const selectAddressSchema = new Schema({
+const AddressSchema = new Schema({
+  userId: String,
   title: String,
   apartments: String,
   address: String,
@@ -11,6 +12,6 @@ const selectAddressSchema = new Schema({
   PINCODE: String,
 });
 
-const SelectAddressModel = model("SelectAddress", selectAddressSchema);
+const AddressModel = model("Address", AddressSchema);
 
-export default SelectAddressModel;
+export default AddressModel;

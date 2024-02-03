@@ -29,12 +29,22 @@ const getAllAddresses = async (_req, res) => {
 // Get a single address by ID
 const getAddressById = async (req, res) => {
   try {
-    const address = await AddressModel.findOne({
-      userId: req.body.userId,
-    });
+    const { userId } = req.body;
+
+    // Validate userId
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ message: "User ID is required in the request body." });
+    }
+
+    // Retrieve the address by userId
+    const address = await AddressModel.findOne({ userId });
+
     if (!address) {
       return res.status(404).json({ message: "Address not found" });
     }
+
     res.status(200).json(address);
   } catch (error) {
     console.error(error);

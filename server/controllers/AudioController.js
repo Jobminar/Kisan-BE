@@ -1,7 +1,17 @@
 import Audio from "../models/Audio.js";
 import multer from "multer";
+import path from "path";
 
-const storage = multer.memoryStorage();
+// Disk storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filenames
+  },
+});
+
 const upload = multer({ storage: storage }).single("audio");
 
 async function saveAudioData(req, res) {
@@ -18,18 +28,15 @@ async function saveAudioData(req, res) {
       }
 
       const { userId } = req.body;
-      const audioDataBlob = req.file.buffer; // Assuming audioData is in the file buffer
+      const audioPath = req.file.path;
 
-      if (!userId || !audioDataBlob) {
+      if (!userId || !audioPath) {
         return res
           .status(400)
-          .json({ success: false, error: "userId and audioData are required" });
+          .json({ success: false, error: "userId and audioPath are required" });
       }
 
-      // Convert Blob to a base64-encoded string
-      const audioData = audioDataBlob.toString("base64");
-
-      const audio = new Audio({ userId, audioData });
+      const audio = new Audio({ userId, audioPath });
       await audio.save();
       return res.json({ success: true, message: "Audio saved successfully" });
     });

@@ -80,13 +80,13 @@ router.delete(
 router.post("/addresses", SelectAddressController.addAddress);
 
 // Route for updating an address by ID
-router.put("/addresses/:addressId", SelectAddressController.updateAddress);
+router.put("/addressbyId", SelectAddressController.updateAddress);
 
 // Route for deleting an address by ID
-router.delete("/addresses/:addressId", SelectAddressController.deleteAddress);
+router.delete("/addressbyId", SelectAddressController.deleteAddress);
 
 // Route for getting an address by ID
-router.get("/addresses/:addressId", SelectAddressController.getAddressById);
+router.get("/addressbyId", SelectAddressController.getAddressById);
 
 // Get all items in the cart
 router.post("/cart", CartController.createCartItem);

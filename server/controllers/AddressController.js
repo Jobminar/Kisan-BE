@@ -28,9 +28,10 @@ const getAllAddresses = async (_req, res) => {
 
 // Get a single address by ID
 const getAddressById = async (req, res) => {
-  const { addressId } = req.params;
   try {
-    const address = await AddressModel.findById(addressId);
+    const address = await AddressModel.findOne({
+      userId: req.body.userId,
+    });
     if (!address) {
       return res.status(404).json({ message: "Address not found" });
     }
@@ -43,10 +44,9 @@ const getAddressById = async (req, res) => {
 
 // Update an address by ID
 const updateAddressById = async (req, res) => {
-  const { addressId } = req.params;
   try {
-    const updatedAddress = await AddressModel.findByIdAndUpdate(
-      addressId,
+    const updatedAddress = await AddressModel.findOneAndUpdate(
+      { userId: req.body.userId },
       req.body,
       { new: true }
     );
@@ -65,9 +65,10 @@ const updateAddressById = async (req, res) => {
 
 // Delete an address by ID
 const deleteAddressById = async (req, res) => {
-  const { addressId } = req.params;
   try {
-    const deletedAddress = await AddressModel.findByIdAndDelete(addressId);
+    const deletedAddress = await AddressModel.findOneAndDelete({
+      userId: req.body.userId,
+    });
     if (!deletedAddress) {
       return res.status(404).json({ message: "Address not found" });
     }

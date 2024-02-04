@@ -1,68 +1,64 @@
 import Audio from "../models/Audio.js";
 import multer from "multer";
 import path from "path";
+import fileType from "file-type";
 
-// Disk storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filenames
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
-const upload = multer({ storage: storage }).single("audio");
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["audio/wav", "audio/mpeg"]; // Add more types if needed
+  const fileMimeType = fileType.fromFile(file.path)?.mime;
+
+  if (allowedTypes.includes(fileMimeType)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type"), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 10, // 10 MB limit
+  },
+}).single("audio");
+
+const handleFileUpload = (req, res, next) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, error: err.message });
+    }
+    next();
+  });
+};
 
 async function saveAudioData(req, res) {
   try {
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(500).json({ success: false, error: err.message });
-      }
-
-      if (!req.file) {
-        return res
-          .status(400)
-          .json({ success: false, error: "Audio file not provided" });
-      }
-
-      const { userId } = req.body;
-      const audioPath = req.file.path;
-
-      if (!userId || !audioPath) {
-        return res
-          .status(400)
-          .json({ success: false, error: "userId and audioPath are required" });
-      }
-
-      const audio = new Audio({ userId, audioPath });
-      await audio.save();
-      return res.json({ success: true, message: "Audio saved successfully" });
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-}
-
-async function getAudioByUserId(req, res) {
-  try {
     const { userId } = req.body;
-    const audio = await findOne({ userId });
-    if (!audio) {
-      return res.status(404).json({ success: false, error: "Audio not found" });
-    }
-    res.send(audio.audioData);
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-}
 
-async function getAllAudioByAdmin(req, res) {
-  try {
-    // Add your authentication and authorization logic here (if needed)
-    const allAudio = await find({}).select("-audioData"); // Exclude audioData for listing
-    res.json({ success: true, audioList: allAudio });
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, error: "userId is required" });
+    }
+
+    const audioPath = req.file.path;
+
+    const audio = new Audio({ userId, audioPath });
+    await audio.save();
+
+    // Additional logic after saving audio data
+    console.log("Audio data saved successfully!");
+
+    return res.json({ success: true, message: "Audio saved successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
@@ -70,46 +66,26 @@ async function getAllAudioByAdmin(req, res) {
 
 async function postAudioByAdmin(req, res) {
   try {
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(500).json({ success: false, error: err.message });
-      }
-
-      const { userId, audioData } = req.body;
-      // Add your admin authentication logic here (if needed)
-      const audio = new Audio({ userId, audioData });
-      await audio.save();
-      return res.json({
-        success: true,
-        message: "Audio posted by admin successfully",
-      });
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-}
-
-async function deleteAudioByUserId(req, res) {
-  try {
     const { userId } = req.body;
-    const audio = await findOneAndDelete({ userId });
-    if (!audio) {
-      return res.status(404).json({ success: false, error: "Audio not found" });
-    }
-    res.json({ success: true, message: "Audio deleted successfully" });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
-  }
-}
 
-async function deleteAudioById(req, res) {
-  try {
-    const { audioId } = req.body;
-    const audio = await Audio.findByIdAndDelete(audioId);
-    if (!audio) {
-      return res.status(404).json({ success: false, error: "Audio not found" });
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, error: "userId is required" });
     }
-    res.json({ success: true, message: "Audio deleted successfully" });
+
+    const audioData = req.file.buffer; // Assuming the audio data is in the request file buffer
+
+    const audio = new Audio({ userId, audioData });
+    await audio.save();
+
+    // Additional logic after posting audio data by admin
+    console.log("Audio posted by admin successfully!");
+
+    return res.json({
+      success: true,
+      message: "Audio posted by admin successfully",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
@@ -117,6 +93,7 @@ async function deleteAudioById(req, res) {
 
 export default {
   saveAudioData,
+  handleFileUpload,
   getAudioByUserId,
   getAllAudioByAdmin,
   postAudioByAdmin,

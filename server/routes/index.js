@@ -111,16 +111,33 @@ router.delete("/cart/delete", CartController.deleteCartItemById);
 router.put("/cart/:orderId", CartController.updateOrderStatus);
 
 // Upload audio route (for users)
-router.post("/uploadaudio", AudioController.saveAudioData);
+router.post(
+  "/saveAudioData",
+  AudioController.handleFileUpload,
+  AudioController.saveAudioData
+);
 
-// Get audio by userId route (for users)
-router.get("/getaudio", AudioController.getAudioByUserId);
+// Route to get audio by userId
+router.get("/getAudioByUserId", AudioController.getAudioByUserId);
 
-// Get all audio route (for admin)
-router.get("/getAllaudio", AudioController.getAllAudioByAdmin);
+// Route to get all audio (admin)
+router.get("/getAllAudioByAdmin", AudioController.getAllAudioByAdmin);
 
-// Post audio route by admin
-router.post("/postByAdminaudio", AudioController.postAudioByAdmin);
+// Route to post audio by admin
+router.post(
+  "/postAudioByAdmin",
+  AudioController.postAudioByAdmin,
+  (req, res) => {
+    // This callback will be called after the middleware has processed the request
+    // You can handle the response or additional logic here
+  }
+);
+
+// Route to delete audio by userId
+router.delete("/deleteAudioByUserId", AudioController.deleteAudioByUserId);
+
+// Route to delete audio by audioId
+router.delete("/deleteAudioById", AudioController.deleteAudioById);
 
 // Delete audio by userId route
 router.delete("/deleteaudio", AudioController.deleteAudioByUserId);

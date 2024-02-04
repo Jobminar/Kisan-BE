@@ -123,16 +123,6 @@ router.get("/getAudioByUserId", AudioController.getAudioByUserId);
 // Route to get all audio (admin)
 router.get("/getAllAudioByAdmin", AudioController.getAllAudioByAdmin);
 
-// Route to post audio by admin
-router.post(
-  "/postAudioByAdmin",
-  AudioController.postAudioByAdmin,
-  (req, res) => {
-    // This callback will be called after the middleware has processed the request
-    // You can handle the response or additional logic here
-  }
-);
-
 // Route to delete audio by userId
 router.delete("/deleteAudioByUserId", AudioController.deleteAudioByUserId);
 

@@ -1,8 +1,10 @@
+// Importing necessary modules and functions
 import Audio from "../models/Audio.js";
 import multer from "multer";
 import path from "path";
-import fileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 
+// Multer configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./uploads/");
@@ -12,9 +14,10 @@ const storage = multer.diskStorage({
   },
 });
 
+// File type validation middleware
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["audio/wav", "audio/mpeg"]; // Add more types if needed
-  const fileMimeType = fileType.fromFile(file.path)?.mime;
+  const allowedTypes = ["audio/wav", "audio/mpeg"];
+  const fileMimeType = fileTypeFromBuffer(file.buffer)?.mime;
 
   if (allowedTypes.includes(fileMimeType)) {
     cb(null, true);
@@ -23,6 +26,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Multer configuration with storage, fileFilter, and size limits
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
@@ -31,6 +35,7 @@ const upload = multer({
   },
 }).single("audio");
 
+// Middleware to handle file upload
 const handleFileUpload = (req, res, next) => {
   upload(req, res, (err) => {
     if (err) {
@@ -40,7 +45,8 @@ const handleFileUpload = (req, res, next) => {
   });
 };
 
-async function saveAudioData(req, res) {
+// Function to save audio data
+const saveAudioData = async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -62,9 +68,10 @@ async function saveAudioData(req, res) {
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
-}
+};
 
-async function postAudioByAdmin(req, res) {
+// Function to post audio by admin
+const postAudioByAdmin = async (req, res) => {
   try {
     const { userId } = req.body;
 
@@ -89,14 +96,44 @@ async function postAudioByAdmin(req, res) {
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
-}
+};
 
+// Function to get audio by user ID
+const getAudioByUserId = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const audio = await Audio.findOne({ userId });
+
+    if (!audio) {
+      return res.status(404).json({ success: false, error: "Audio not found" });
+    }
+
+    // Additional logic if needed
+
+    res.send(audio.audioData); // Adjust as per your audio data structure
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Function to get all audio by admin
+const getAllAudioByAdmin = async (req, res) => {
+  try {
+    const allAudio = await Audio.find({}).select("-audioData"); // Exclude audioData for listing
+
+    // Additional logic if needed
+
+    res.json({ success: true, audioList: allAudio });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Exporting the functions as an object
 export default {
   saveAudioData,
+  postAudioByAdmin,
   handleFileUpload,
   getAudioByUserId,
   getAllAudioByAdmin,
-  postAudioByAdmin,
-  deleteAudioByUserId,
-  deleteAudioById,
 };

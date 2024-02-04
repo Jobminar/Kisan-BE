@@ -123,13 +123,4 @@ router.get("/getAudioByUserId", AudioController.getAudioByUserId);
 // Route to get all audio (admin)
 router.get("/getAllAudioByAdmin", AudioController.getAllAudioByAdmin);
 
-// Route to delete audio by userId
-router.delete("/deleteAudioByUserId", AudioController.deleteAudioByUserId);
-
-// Route to delete audio by audioId
-router.delete("/deleteAudioById", AudioController.deleteAudioById);
-
-// Delete audio by userId route
-router.delete("/deleteaudio", AudioController.deleteAudioByUserId);
-router.delete("/deletebyid", AudioController.deleteAudioById);
 export default router;

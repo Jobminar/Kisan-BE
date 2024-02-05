@@ -111,16 +111,10 @@ router.delete("/cart/delete", CartController.deleteCartItemById);
 router.put("/cart/:orderId", CartController.updateOrderStatus);
 
 // Upload audio route (for users)
-router.post(
-  "/saveAudioData",
-  AudioController.handleFileUpload,
-  AudioController.saveAudioData
-);
+// Endpoint to post audio data
+router.post("/upload-audio", AudioController.postAudio);
 
-// Route to get audio by userId
-router.get("/getAudioByUserId", AudioController.getAudioByUserId);
-
-// Route to get all audio (admin)
-router.get("/getAllAudioByAdmin", AudioController.getAllAudioByAdmin);
+// Endpoint to get audio data by userId
+router.get("/audio/user/:userId", AudioController.getAudioByUserId);
 
 export default router;

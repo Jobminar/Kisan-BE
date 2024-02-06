@@ -7,13 +7,7 @@ const singleOrderSchema = new Schema({
   itemId: {
     type: String,
   },
-  category: {
-    type: String,
-  },
   itemname: {
-    type: String,
-  },
-  units: {
     type: String,
   },
   costPerUnit: {
@@ -21,9 +15,6 @@ const singleOrderSchema = new Schema({
   },
   discount: {
     type: Number,
-  },
-  description: {
-    type: String,
   },
   itemImage: {
     type: String,
@@ -40,7 +31,6 @@ const singleOrderSchema = new Schema({
   orderStatus: {
     type: String,
   },
-
   addressId: {
     type: Schema.Types.ObjectId,
     ref: "Address", // Reference to the 'Address' model

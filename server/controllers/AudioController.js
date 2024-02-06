@@ -27,44 +27,46 @@ const getAudioByUserId = async (req, res) => {
   }
 };
 
-// Function to post audio by admin
-const postAudioByAdmin = async (req, res) => {
-  try {
-    const { userId } = req.body;
+// Controller logic to post audio by admin
+const postAudioByAdminId = async (req, res) => {
+  const { adminId, audioData } = req.body;
 
-    if (!userId) {
+  try {
+    if (!adminId || !audioData) {
       return res
         .status(400)
-        .json({ success: false, error: "userId is required" });
+        .json({ error: "Admin ID and audio data are required." });
     }
 
-    const audioData = req.file.buffer; // Assuming the audio data is in the request file buffer
-
-    const audio = new Audio({ userId, audioData });
-    await audio.save();
-
-    // Additional logic after posting audio data by admin
-    console.log("Audio posted by admin successfully!");
-
-    return res.json({
-      success: true,
-      message: "Audio posted by admin successfully",
+    // Save the audio data with adminId to MongoDB
+    const newAudio = await Audio.create({
+      userId: adminId,
+      audioData,
+      isAdmin: true,
     });
+    res.status(201).json(newAudio);
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ error: `Error posting audio by admin: ${error.message}` });
   }
 };
 
-// Function to get all audio by admin
-const getAllAudioByAdmin = async (req, res) => {
+// Controller logic to get all audio data
+const getAllAudio = async (req, res) => {
   try {
-    const allAudio = await Audio.find({}).select("-audioData"); // Exclude audioData for listing
+    // Find all audio data in the system
+    const audioList = await Audio.find();
 
-    // Additional logic if needed
+    if (!audioList || audioList.length === 0) {
+      return res.status(404).json({ error: "No audio data found." });
+    }
 
-    res.json({ success: true, audioList: allAudio });
+    res.status(200).json(audioList);
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
+    res
+      .status(500)
+      .json({ error: `Error getting all audio data: ${error.message}` });
   }
 };
 
@@ -72,4 +74,6 @@ const getAllAudioByAdmin = async (req, res) => {
 export default {
   postAudio,
   getAudioByUserId,
+  postAudioByAdminId,
+  getAllAudio,
 };

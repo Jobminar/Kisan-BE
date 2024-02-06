@@ -5,7 +5,7 @@ import { signup, login, getAllUsers } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import AddressController from "../controllers/AddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
-import OrderController from "../controllers/OrderController.js";
+
 import {
   createBillDetails,
   getAllBillDetails,
@@ -14,6 +14,7 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
+import OrderController from "../controllers/OrderController.js";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
@@ -61,10 +62,8 @@ router.delete("/inventory/:itemId", InventoryController.deleteItem);
 router.get("/admin/:adminId/orders", OrderController.getAllOrders);
 
 // Get order by ID
-router.get("/admin/:adminId/orders/:orderId", OrderController.getOrderById);
 
 // Create a new order
-router.post("/admin/:adminId/orders/create", OrderController.createOrder);
 
 // Update an order
 router.put(
@@ -117,4 +116,12 @@ router.post("/upload-audio", AudioController.postAudio);
 // Endpoint to get audio data by userId
 router.get("/audio/user/:userId", AudioController.getAudioByUserId);
 
+// Add an order for an admin
+router.post("/admins/:adminId/orders", OrderController.addOrder);
+
+// Update an order for an admin
+router.put("/admins/:adminId/orders/:orderId", OrderController.updateOrder);
+
+// Delete an order for an admin
+router.delete("/admins/:adminId/orders/:orderId", OrderController.deleteOrder);
 export default router;

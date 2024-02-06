@@ -1,174 +1,96 @@
-// Import the required modules
-import AdminModel from "../models/AdminModel.js";
+// orderController.js
 
-// Create a controller function for getting all orders
+import OrderModel from "../models/OrderModel.js"; // Update the path accordingly
+
+const isAdmin = (adminId) => {
+  // Your implementation of isAdmin function
+};
+
+const addOrder = async (req, res) => {
+  try {
+    const orderData = req.body;
+    const newOrder = new OrderModel(orderData);
+    const savedOrder = await newOrder.save();
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    res.status(500).json({ error: `Error creating order: ${error.message}` });
+  }
+};
+
+const getOrdersByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const orders = await OrderModel.find({ userId });
+    res.status(200).json(orders);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `Error getting orders by userId: ${error.message}` });
+  }
+};
+
 const getAllOrders = async (req, res) => {
   try {
-    // Get the admin id from the params
-    const { adminId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Send all orders as a response
-    res.status(200).json({ orders: admin.orders });
+    const orders = await OrderModel.find();
+    res.status(200).json(orders);
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res
+      .status(500)
+      .json({ error: `Error getting all orders: ${error.message}` });
   }
 };
 
-// Create a controller function for getting an order by ID
-const getOrderById = async (req, res) => {
-  try {
-    // Get the admin id and order id from the params
-    const { adminId, orderId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Find the order by ID
-    const order = admin.orders.find((order) => order._id == orderId);
-
-    // Check if the order exists
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    // Send the order as a response
-    res.status(200).json({ order });
-  } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Create a controller function for creating a new order
-const createOrder = async (req, res) => {
-  try {
-    // Get the admin id from the params
-    const { adminId } = req.params;
-
-    // Get the order data from the body
-    const orderData = req.body;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Add the order to the orders array
-    admin.orders.push(orderData);
-
-    // Save the admin to the database
-    await admin.save();
-
-    // Send a success response
-    res.status(201).json({ message: "Order created successfully" });
-  } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-};
-
-// Create a controller function for updating an order
 const updateOrder = async (req, res) => {
   try {
-    // Get the admin id and order id from the params
-    const { adminId, orderId } = req.params;
-
-    // Get the updated order data from the body
-    const updatedOrder = req.body;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Find the index of the order in the orders array
-    const orderIndex = admin.orders.findIndex((order) => order._id == orderId);
-
-    // Check if the order exists
-    if (orderIndex === -1) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    // Update the order in the orders array
-    admin.orders[orderIndex] = { ...admin.orders[orderIndex], ...updatedOrder };
-
-    // Save the admin to the database
-    await admin.save();
-
-    // Send a success response
-    res.status(200).json({ message: "Order updated successfully" });
+    const orderId = req.params.orderId;
+    const updatedData = req.body;
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+      orderId,
+      updatedData,
+      { new: true }
+    );
+    res.status(200).json(updatedOrder);
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ error: `Error updating order: ${error.message}` });
   }
 };
 
-// Create a controller function for deleting an order
 const deleteOrder = async (req, res) => {
   try {
-    // Get the admin id and order id from the params
-    const { adminId, orderId } = req.params;
-
-    // Find the admin by id
-    const admin = await findById(adminId);
-
-    // Check if the admin exists
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    // Find the index of the order in the orders array
-    const orderIndex = admin.orders.findIndex((order) => order._id == orderId);
-
-    // Check if the order exists
-    if (orderIndex === -1) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    // Remove the order from the orders array
-    admin.orders.splice(orderIndex, 1);
-
-    // Save the admin to the database
-    await admin.save();
-
-    // Send a success response
-    res.status(200).json({ message: "Order deleted successfully" });
+    const orderId = req.params.orderId;
+    const deletedOrder = await OrderModel.findByIdAndDelete(orderId);
+    res.status(200).json(deletedOrder);
   } catch (error) {
-    // Handle any errors
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ error: `Error deleting order: ${error.message}` });
   }
 };
 
-// Export the controller functions
+const postOrderByAdminId = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    if (isAdmin(adminId)) {
+      const orderData = req.body;
+      orderData.adminId = adminId;
+      const newOrder = new OrderModel(orderData);
+      const savedOrder = await newOrder.save();
+      res.status(201).json(savedOrder);
+    } else {
+      res
+        .status(403)
+        .json({ error: "User is not authorized to create orders." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `Error creating order by admin: ${error.message}` });
+  }
+};
+
 export default {
+  addOrder,
+  getOrdersByUserId,
   getAllOrders,
-  getOrderById,
-  createOrder,
   updateOrder,
   deleteOrder,
+  postOrderByAdminId,
 };

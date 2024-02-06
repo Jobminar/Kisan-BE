@@ -1,29 +1,11 @@
 import { Schema, model } from "mongoose";
 
-const singleOrderSchema = new Schema({
+const orderSchema = new Schema({
   userId: {
-    type: String,
-  },
-  itemId: {
-    type: String,
-  },
-  itemname: {
-    type: String,
-  },
-  costPerUnit: {
-    type: Number,
-  },
-  discount: {
-    type: Number,
-  },
-  itemImage: {
     type: String,
   },
   payment: {
     type: String,
-  },
-  count: {
-    type: Number,
   },
   price: {
     type: Number,
@@ -39,10 +21,12 @@ const singleOrderSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
-
-const orderSchema = new Schema({
-  orders: [singleOrderSchema],
+  cartIds: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Cart", // Reference to the 'Cart' model
+    },
+  ],
 });
 
 const OrderModel = model("Order", orderSchema);

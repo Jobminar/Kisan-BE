@@ -40,9 +40,7 @@ const singleOrderSchema = new Schema({
   orderStatus: {
     type: String,
   },
-  zone: {
-    type: String,
-  },
+
   addressId: {
     type: Schema.Types.ObjectId,
     ref: "Address", // Reference to the 'Address' model

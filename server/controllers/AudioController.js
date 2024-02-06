@@ -53,7 +53,7 @@ const postAudioByAdminId = async (req, res) => {
 };
 
 // Controller logic to get all audio data
-const getAllAudio = async (req, res) => {
+const getAllAudio = async (_req, res) => {
   try {
     // Find all audio data in the system
     const audioList = await Audio.find();
@@ -70,10 +70,36 @@ const getAllAudio = async (req, res) => {
   }
 };
 
+const postReplyAudio = async (req, res) => {
+  try {
+    const { userId, adminId, audioData } = req.body;
+
+    if (!userId && !adminId) {
+      return res
+        .status(400)
+        .json({ error: "Either userId or adminId is required." });
+    }
+
+    // Save the audio data to MongoDB with userId or adminId
+    const newAudio = await Audio.create({
+      userId: userId || adminId,
+      audioData,
+      isAdmin: !!adminId, // Set isAdmin to true if adminId is provided
+    });
+
+    res.status(201).json(newAudio);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `Error posting reply audio: ${error.message}` });
+  }
+};
+
 // Exporting the functions as an object
 export default {
   postAudio,
   getAudioByUserId,
   postAudioByAdminId,
+  postReplyAudio,
   getAllAudio,
 };

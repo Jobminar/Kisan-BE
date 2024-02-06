@@ -115,8 +115,13 @@ router.post("/upload-audio", AudioController.postAudio);
 
 // Endpoint to get audio data by userId
 router.get("/audio/user/:userId", AudioController.getAudioByUserId);
-
+// Post reply audio with either userId or adminId
+router.post("/audio/reply", AudioController.postReplyAudio);
 // Add an order for an admin
+// Post audio by admin
+router.post("/audio/admin", AudioController.postAudioByAdminId);
+// Get all audio
+router.get("/audio", AudioController.getAllAudio);
 router.post("/admins/:adminId/orders", OrderController.addOrder);
 
 // Update an order for an admin

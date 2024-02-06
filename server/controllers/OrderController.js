@@ -4,7 +4,18 @@ import OrderModel from "../models/OrderModel.js"; // Update the path
 const postOrder = async (req, res) => {
   try {
     const orderData = req.body;
-    const newOrder = await OrderModel.create(orderData);
+
+    // Create a new order object with dynamic properties
+    const dynamicOrder = {};
+    for (const key in orderData) {
+      if (orderData.hasOwnProperty(key)) {
+        dynamicOrder[key] = orderData[key];
+      }
+    }
+
+    // Create a new order with the dynamic properties
+    const newOrder = await OrderModel.create(dynamicOrder);
+
     res.status(201).json(newOrder);
   } catch (error) {
     console.error(error);

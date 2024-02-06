@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const orderSchema = new Schema({
+const singleOrderSchema = new Schema({
   userId: {
     type: String,
   },
@@ -51,6 +51,10 @@ const orderSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+const orderSchema = new Schema({
+  orders: [singleOrderSchema],
 });
 
 const OrderModel = model("Order", orderSchema);

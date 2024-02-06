@@ -1,5 +1,3 @@
-// controllers/orderController.js
-
 import OrderModel from "../models/OrderModel.js"; // Update the path
 
 // Create a new order
@@ -19,7 +17,7 @@ export const getOrderbyUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
     const orders = await OrderModel.find({ userId }).populate({
-      path: "addressId",
+      path: "orders.addressId",
       model: "Address", // Assuming your Address model is named 'Address'
     });
     res.status(200).json(orders);
@@ -33,7 +31,7 @@ export const getOrderbyUserId = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find().populate({
-      path: "addressId",
+      path: "orders.addressId",
       model: "Address", // Assuming your Address model is named 'Address'
     });
     res.status(200).json(orders);
@@ -47,8 +45,8 @@ export const getAllOrders = async (req, res) => {
 const sortOrdersbyDate = async (req, res) => {
   try {
     const orders = await OrderModel.find()
-      .sort({ currentDate: 1 })
-      .populate("addressId");
+      .sort({ "orders.currentDate": 1 })
+      .populate("orders.addressId");
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);
@@ -73,9 +71,9 @@ const updateOrder = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const updatedOrderData = req.body;
-    const updatedOrder = await OrderModel.findByIdAndUpdate(
-      orderId,
-      updatedOrderData,
+    const updatedOrder = await OrderModel.findOneAndUpdate(
+      { "orders._id": orderId },
+      { $set: { "orders.$": updatedOrderData } },
       { new: true }
     );
     res.status(200).json(updatedOrder);

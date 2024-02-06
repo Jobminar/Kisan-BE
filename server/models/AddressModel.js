@@ -2,14 +2,15 @@ import { Schema, model } from "mongoose";
 
 const AddressSchema = new Schema({
   userId: String,
-  title: String,
+  area: String,
+  Type: String,
   apartments: String,
   address: String,
   city: String,
   streetNoOrName: String,
   state: String,
   country: String,
-  PINCODE: String,
+  pincode: String,
 });
 
 const AddressModel = model("Address", AddressSchema);

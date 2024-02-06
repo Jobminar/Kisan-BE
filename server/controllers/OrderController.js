@@ -1,6 +1,6 @@
 // controllers/orderController.js
 
-import OrderModel from "../models/Order"; // Update the path
+import OrderModel from "../models/OrderModel.js"; // Update the path
 
 // Create a new order
 const postOrder = async (req, res) => {

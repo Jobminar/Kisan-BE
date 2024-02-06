@@ -123,11 +123,5 @@ router.post("/audio/reply", AudioController.postReplyAudio);
 router.post("/audio/admin", AudioController.postAudioByAdminId);
 // Get all audio
 router.get("/audio", AudioController.getAllAudio);
-router.post("/admins/:adminId/orders", OrderController.addOrder);
 
-// Update an order for an admin
-router.put("/admins/:adminId/orders/:orderId", OrderController.updateOrder);
-
-// Delete an order for an admin
-router.delete("/admins/:adminId/orders/:orderId", OrderController.deleteOrder);
 export default router;

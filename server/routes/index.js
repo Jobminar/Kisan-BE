@@ -5,7 +5,7 @@ import { signup, login, getAllUsers } from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import AddressController from "../controllers/AddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
-
+import OrderController from "../controllers/OrderController.js";
 import {
   createBillDetails,
   getAllBillDetails,
@@ -14,7 +14,7 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
-import OrderController from "../controllers/OrderController.js";
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
@@ -59,23 +59,24 @@ router.delete("/inventory/:itemId", InventoryController.deleteItem);
 // Update item in admin inventory (if needed)
 
 // Get all orders
-router.get("/admin/:adminId/orders", OrderController.getAllOrders);
+router.post("/orders", OrderController.postOrder);
 
-// Get order by ID
+// GET: Get orders by userId
+router.get("/orders/:userId", OrderController.getOrderbyUserId);
 
-// Create a new order
+// GET: Get all orders
+router.get("/getorders", OrderController.getAllOrders);
 
-// Update an order
-router.put(
-  "/admin/:adminId/orders/:orderId/update",
-  OrderController.updateOrder
-);
+// GET: Get orders sorted by date (ascending)
+router.get("/orders/sortByDate", OrderController.sortOrdersbyDate);
 
-// Delete an order
-router.delete(
-  "/admin/:adminId/orders/:orderId/delete",
-  OrderController.deleteOrder
-);
+// DELETE: Delete an order by orderId
+router.delete("/orders/:orderId", OrderController.deleteOrder);
+
+// PUT: Update an order by orderId
+router.put("/orders/:orderId", OrderController.updateOrder);
+
+//creating addressses
 router.post("/addresses", AddressController.createAddress);
 
 // Route to get addresses by userId

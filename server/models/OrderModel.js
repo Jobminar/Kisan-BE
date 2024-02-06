@@ -43,6 +43,14 @@ const orderSchema = new Schema({
   zone: {
     type: String,
   },
+  addressId: {
+    type: Schema.Types.ObjectId,
+    ref: "Address", // Reference to the 'Address' model
+  },
+  currentDate: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const OrderModel = model("Order", orderSchema);

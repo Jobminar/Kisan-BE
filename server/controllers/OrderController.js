@@ -1,96 +1,95 @@
-// orderController.js
+// controllers/orderController.js
 
-import OrderModel from "../models/OrderModel.js"; // Update the path accordingly
+import OrderModel from "../models/Order"; // Update the path
 
-const isAdmin = (adminId) => {
-  // Your implementation of isAdmin function
-};
-
-const addOrder = async (req, res) => {
+// Create a new order
+const postOrder = async (req, res) => {
   try {
     const orderData = req.body;
-    const newOrder = new OrderModel(orderData);
-    const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
+    const newOrder = await OrderModel.create(orderData);
+    res.status(201).json(newOrder);
   } catch (error) {
-    res.status(500).json({ error: `Error creating order: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const getOrdersByUserId = async (req, res) => {
+// Get orders by userId
+export const getOrderbyUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const orders = await OrderModel.find({ userId });
+    const orders = await OrderModel.find({ userId }).populate({
+      path: "addressId",
+      model: "Address", // Assuming your Address model is named 'Address'
+    });
     res.status(200).json(orders);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Error getting orders by userId: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const getAllOrders = async (req, res) => {
+// Get all orders
+export const getAllOrders = async (req, res) => {
   try {
-    const orders = await OrderModel.find();
+    const orders = await OrderModel.find().populate({
+      path: "addressId",
+      model: "Address", // Assuming your Address model is named 'Address'
+    });
     res.status(200).json(orders);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Error getting all orders: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const updateOrder = async (req, res) => {
+// Get orders sorted by date (ascending)
+const sortOrdersbyDate = async (req, res) => {
   try {
-    const orderId = req.params.orderId;
-    const updatedData = req.body;
-    const updatedOrder = await OrderModel.findByIdAndUpdate(
-      orderId,
-      updatedData,
-      { new: true }
-    );
-    res.status(200).json(updatedOrder);
+    const orders = await OrderModel.find()
+      .sort({ currentDate: 1 })
+      .populate("addressId");
+    res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ error: `Error updating order: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+// Delete an order by orderId
 const deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const deletedOrder = await OrderModel.findByIdAndDelete(orderId);
     res.status(200).json(deletedOrder);
   } catch (error) {
-    res.status(500).json({ error: `Error deleting order: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const postOrderByAdminId = async (req, res) => {
+// Update an order by orderId
+const updateOrder = async (req, res) => {
   try {
-    const adminId = req.params.adminId;
-    if (isAdmin(adminId)) {
-      const orderData = req.body;
-      orderData.adminId = adminId;
-      const newOrder = new OrderModel(orderData);
-      const savedOrder = await newOrder.save();
-      res.status(201).json(savedOrder);
-    } else {
-      res
-        .status(403)
-        .json({ error: "User is not authorized to create orders." });
-    }
+    const orderId = req.params.orderId;
+    const updatedOrderData = req.body;
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+      orderId,
+      updatedOrderData,
+      { new: true }
+    );
+    res.status(200).json(updatedOrder);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: `Error creating order by admin: ${error.message}` });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export default {
-  addOrder,
-  getOrdersByUserId,
+  postOrder,
+  getOrderbyUserId,
   getAllOrders,
-  updateOrder,
+  sortOrdersbyDate,
   deleteOrder,
-  postOrderByAdminId,
+  updateOrder,
 };

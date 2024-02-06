@@ -1,5 +1,6 @@
 import OrderModel from "../models/OrderModel.js"; // Update the path
-
+import CartModel from "../models/CartModel.js";
+import AddressModel from "../models/AddressModel.js";
 // Create a new order
 const postOrder = async (req, res) => {
   try {
@@ -12,14 +13,18 @@ const postOrder = async (req, res) => {
   }
 };
 
-// Get orders by userId
 export const getOrderbyUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const orders = await OrderModel.find({ userId }).populate({
-      path: "orders.addressId",
-      model: "Address", // Assuming your Address model is named 'Address'
-    });
+    const orders = await OrderModel.find({ userId })
+      .populate({
+        path: "orders.cartIds",
+        model: "Cart",
+      })
+      .populate({
+        path: "orders.addressId",
+        model: "Address",
+      });
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);
@@ -30,10 +35,15 @@ export const getOrderbyUserId = async (req, res) => {
 // Get all orders
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await OrderModel.find().populate({
-      path: "orders.addressId",
-      model: "Address", // Assuming your Address model is named 'Address'
-    });
+    const orders = await OrderModel.find()
+      .populate({
+        path: "orders.cartIds",
+        model: "Cart",
+      })
+      .populate({
+        path: "orders.addressId",
+        model: "Address",
+      });
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);

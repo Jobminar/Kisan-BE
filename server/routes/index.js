@@ -62,7 +62,7 @@ router.delete("/inventory/:itemId", InventoryController.deleteItem);
 router.post("/orders", OrderController.postOrder);
 
 // GET: Get orders by userId
-router.get("/orders/:userId", OrderController.getOrderbyUserId);
+router.get("/orders/:userId", OrderController.getOrderByUserId);
 
 // GET: Get all orders
 router.get("/getorders", OrderController.getAllOrders);

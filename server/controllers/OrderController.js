@@ -13,38 +13,51 @@ const postOrder = async (req, res) => {
   }
 };
 
-export const getOrderbyUserId = async (req, res) => {
+const getOrderByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const orders = await OrderModel.find({ userId })
-      .populate({
-        path: "orders.cartIds",
-        model: "Cart",
+    const orders = await OrderModel.find({ userId });
+
+    // Retrieve Cart and Address records for each order
+    const ordersWithDetails = await Promise.all(
+      orders.map(async (order) => {
+        const cartDetails = await CartModel.findById(order.cartIds[0]);
+        const addressDetails = await AddressModel.findById(order.addressId);
+
+        return {
+          ...order.toObject(),
+          cartDetails,
+          addressDetails,
+        };
       })
-      .populate({
-        path: "orders.addressId",
-        model: "Address",
-      });
-    res.status(200).json(orders);
+    );
+
+    res.status(200).json(ordersWithDetails);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// Get all orders
-export const getAllOrders = async (req, res) => {
+const getAllOrders = async (req, res) => {
   try {
-    const orders = await OrderModel.find()
-      .populate({
-        path: "orders.cartIds",
-        model: "Cart",
+    const orders = await OrderModel.find();
+
+    // Retrieve Cart and Address records for each order
+    const ordersWithDetails = await Promise.all(
+      orders.map(async (order) => {
+        const cartDetails = await CartModel.findById(order.cartIds[0]);
+        const addressDetails = await AddressModel.findById(order.addressId);
+
+        return {
+          ...order.toObject(),
+          cartDetails,
+          addressDetails,
+        };
       })
-      .populate({
-        path: "orders.addressId",
-        model: "Address",
-      });
-    res.status(200).json(orders);
+    );
+
+    res.status(200).json(ordersWithDetails);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -95,7 +108,7 @@ const updateOrder = async (req, res) => {
 
 export default {
   postOrder,
-  getOrderbyUserId,
+  getOrderByUserId,
   getAllOrders,
   sortOrdersbyDate,
   deleteOrder,

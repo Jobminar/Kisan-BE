@@ -7,35 +7,8 @@ import AddressModel from "../models/AddressModel.js";
 
 const createOrder = async (req, res) => {
   try {
-    const {
-      userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus,
-      addressId,
-      cartIds,
-      count,
-    } = req.body;
-
-    // Access the base64-encoded image directly
-    let itemImage = req.body.itemImage || null;
-
-    // Remove the prefix if present
-    if (itemImage && itemImage.startsWith("data:image;base64,")) {
-      itemImage = itemImage.replace("data:image;base64,", "");
-    }
-
     const newOrder = new OrderModel({
-      userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus,
-      addressId,
-      cartIds,
-      itemImage,
-      count,
+      ...req.body,
     });
 
     const savedOrder = await newOrder.save();

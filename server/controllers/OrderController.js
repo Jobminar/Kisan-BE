@@ -19,8 +19,14 @@ const createOrder = async (req, res) => {
       count,
     } = req.body;
 
+    // Ensure itemImage is a string
+    let itemImageString = itemImage;
+    if (typeof itemImage !== "string") {
+      itemImageString = String(itemImage);
+    }
+
     // Remove base64 prefix if present
-    const base64Data = itemImage.replace(/^data:image\/\w+;base64,/, "");
+    const base64Data = itemImageString.replace(/^data:image\/\w+;base64,/, "");
 
     // Create a new order using the OrderModel
     const newOrder = new OrderModel({
@@ -31,7 +37,7 @@ const createOrder = async (req, res) => {
       orderStatus,
       addressId,
       cartIds,
-      itemImage: base64Data, // Save the base64 string without the prefix
+      itemImage: base64Data, // Save the base64 string without the entire prefix
       count,
     });
 

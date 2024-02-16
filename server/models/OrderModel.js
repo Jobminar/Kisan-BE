@@ -30,6 +30,8 @@ const orderSchema = new Schema({
       ref: "Cart", // Reference to the 'Cart' model
     },
   ],
+  itemImage: { type: String },
+  count: { type: Number },
 });
 
 const OrderModel = model("Order", orderSchema);

@@ -1,17 +1,28 @@
+import multer from "multer";
 import OrderModel from "../models/OrderModel.js"; // Update the path
 import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
 // Create a new order
-const postOrder = async (req, res) => {
+const storage = multer.memoryStorage(); // Store images in memory as buffers
+const upload = multer({ storage: storage });
+
+// Create a new order with Multer for handling file uploads
+const postOrder = upload.single("itemImage", async (req, res) => {
   try {
     const orderData = req.body;
+
+    // If a file is uploaded, convert the itemImage buffer to base64
+    if (req.file) {
+      orderData.itemImage = req.file.buffer.toString("base64");
+    }
+
     const newOrder = await OrderModel.create(orderData);
     res.status(201).json(newOrder);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
+});
 
 const getOrderDetails = async (order) => {
   try {

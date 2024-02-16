@@ -37,19 +37,17 @@ const getOrderDetails = async (order) => {
 
 const getOrderByUserId = async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.query.userId; // Assuming userId is in the query parameters
 
     if (!userId) {
-      return res.status(400).json({ error: "Missing userId in request body" });
+      return res
+        .status(400)
+        .json({ error: "Missing userId in query parameters" });
     }
 
     const orders = await OrderModel.find({ userId });
 
-    const ordersWithDetails = await Promise.all(
-      orders.map(async (order) => getOrderDetails(order))
-    );
-
-    res.status(200).json(ordersWithDetails);
+    res.status(200).json(orders);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

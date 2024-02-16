@@ -7,6 +7,9 @@ const orderSchema = new Schema({
   payment: {
     type: String,
   },
+  paymentId: {
+    type: String,
+  },
   price: {
     type: Number,
   },

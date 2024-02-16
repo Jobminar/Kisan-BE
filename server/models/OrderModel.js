@@ -31,12 +31,11 @@ const orderSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  cartIds: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  cartIds: {
+    type: String,
+    required: true,
+  },
+
   itemImage: {
     type: String,
     required: true,

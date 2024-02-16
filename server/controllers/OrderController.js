@@ -3,68 +3,49 @@ import OrderModel from "../models/OrderModel.js"; // Update the path
 import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
 // Create a new order
-const storage = multer.memoryStorage(); // You can customize this based on your file storage needs
-const upload = multer({ storage: storage }).single("itemImage");
+// You can customize this based on your file storage needs
 
 const createOrder = (req, res) => {
-  upload(req, res, async (err) => {
-    try {
-      if (err instanceof multer.MulterError) {
-        return res
-          .status(400)
-          .json({ error: "Multer Error", message: err.message });
-      } else if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
+  try {
+    const {
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      count,
+    } = req.body;
 
-      const {
-        userId,
-        payment,
-        paymentId,
-        price,
-        orderStatus,
-        addressId,
-        cartIds,
-        count,
-      } = req.body;
+    // Access the file buffer if uploaded
+    let itemImage = null;
 
-      // Access the file buffer if uploaded
-      let itemImage = null;
-
-      if (req.file) {
-        // Check if the base64 string has the correct prefix
-        const base64Prefix = "data:image/jpeg;base64,";
-        const uploadedImage = req.file.buffer.toString("base64");
-
-        if (uploadedImage.startsWith(base64Prefix)) {
-          itemImage = uploadedImage;
-        } else {
-          // If not, prepend the correct prefix
-          itemImage = base64Prefix + uploadedImage;
-        }
-      }
-
-      const newOrder = new OrderModel({
-        userId,
-        payment,
-        paymentId,
-        price,
-        orderStatus,
-        addressId,
-        cartIds,
-        itemImage,
-        count,
-      });
-
-      const savedOrder = await newOrder.save();
-
-      res.status(201).json(savedOrder);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
+    if (req.file) {
+      // Directly append the base64 prefix
+      const uploadedImage = req.file.buffer.toString("base64");
+      itemImage = "data:image;base64," + uploadedImage;
     }
-  });
+
+    const newOrder = new OrderModel({
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      itemImage,
+      count,
+    });
+
+    const savedOrder = newOrder.save();
+
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 const getOrderDetails = async (order) => {

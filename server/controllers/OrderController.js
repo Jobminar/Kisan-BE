@@ -112,6 +112,7 @@ export default {
   postOrder,
   getOrderByUserId,
   getAllOrders,
+  getOrderDetails,
   sortOrdersbyDate,
   deleteOrder,
   updateOrder,

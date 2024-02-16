@@ -19,6 +19,9 @@ const createOrder = async (req, res) => {
       count,
     } = req.body;
 
+    // Remove base64 prefix if present
+    const base64Data = itemImage.replace(/^data:image\/\w+;base64,/, "");
+
     // Create a new order using the OrderModel
     const newOrder = new OrderModel({
       userId,
@@ -28,7 +31,7 @@ const createOrder = async (req, res) => {
       orderStatus,
       addressId,
       cartIds,
-      itemImage,
+      itemImage: base64Data, // Save the base64 string without the prefix
       count,
     });
 

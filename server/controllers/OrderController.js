@@ -37,12 +37,10 @@ const getOrderDetails = async (order) => {
 
 const getOrderByUserId = async (req, res) => {
   try {
-    const userId = req.query.userId; // Assuming userId is in the query parameters
+    const userId = req.body.userId;
 
     if (!userId) {
-      return res
-        .status(400)
-        .json({ error: "Missing userId in query parameters" });
+      return res.status(400).json({ error: "Missing userId in request body" });
     }
 
     const orders = await OrderModel.find({ userId });

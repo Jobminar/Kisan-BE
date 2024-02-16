@@ -17,8 +17,7 @@ const orderSchema = new Schema({
     type: String,
   },
   addressId: {
-    type: Schema.Types.ObjectId,
-    ref: "Address", // Reference to the 'Address' model
+    type: String,
   },
   currentDate: {
     type: Date,
@@ -26,8 +25,7 @@ const orderSchema = new Schema({
   },
   cartIds: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Cart", // Reference to the 'Cart' model
+      type: String,
     },
   ],
   itemImage: { type: String },

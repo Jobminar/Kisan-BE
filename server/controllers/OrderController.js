@@ -5,7 +5,7 @@ import AddressModel from "../models/AddressModel.js";
 // Create a new order
 // You can customize this based on your file storage needs
 
-const createOrder = (req, res) => {
+const createOrder = async (req, res) => {
   try {
     const {
       userId,
@@ -18,13 +18,12 @@ const createOrder = (req, res) => {
       count,
     } = req.body;
 
-    // Access the file buffer if uploaded
-    let itemImage = null;
+    // Access the base64-encoded image directly
+    let itemImage = req.body.itemImage || null;
 
-    if (req.file) {
-      // Directly append the base64 prefix
-      const uploadedImage = req.file.buffer.toString("base64");
-      itemImage = "data:image;base64," + uploadedImage;
+    // Remove the prefix if present
+    if (itemImage && itemImage.startsWith("data:image;base64,")) {
+      itemImage = itemImage.replace("data:image;base64,", "");
     }
 
     const newOrder = new OrderModel({
@@ -39,7 +38,7 @@ const createOrder = (req, res) => {
       count,
     });
 
-    const savedOrder = newOrder.save();
+    const savedOrder = await newOrder.save();
 
     res.status(201).json(savedOrder);
   } catch (error) {

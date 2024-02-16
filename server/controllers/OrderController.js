@@ -10,12 +10,10 @@ const createOrder = (req, res) => {
   upload(req, res, async (err) => {
     try {
       if (err instanceof multer.MulterError) {
-        // Handle Multer errors (e.g., file size, file type)
         return res
           .status(400)
           .json({ error: "Multer Error", message: err.message });
       } else if (err) {
-        // Handle other errors
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error" });
       }
@@ -32,7 +30,20 @@ const createOrder = (req, res) => {
       } = req.body;
 
       // Access the file buffer if uploaded
-      const itemImage = req.file ? req.file.buffer.toString("base64") : null;
+      let itemImage = null;
+
+      if (req.file) {
+        // Check if the base64 string has the correct prefix
+        const base64Prefix = "data:image/jpeg;base64,";
+        const uploadedImage = req.file.buffer.toString("base64");
+
+        if (uploadedImage.startsWith(base64Prefix)) {
+          itemImage = uploadedImage;
+        } else {
+          // If not, prepend the correct prefix
+          itemImage = base64Prefix + uploadedImage;
+        }
+      }
 
       const newOrder = new OrderModel({
         userId,

@@ -13,23 +13,35 @@ const postOrder = async (req, res) => {
   }
 };
 
+const getOrderDetails = async (order) => {
+  try {
+    const cartDetails = await CartModel.findById(order.cartIds[0]);
+    const addressDetails = await AddressModel.findById(order.addressId);
+
+    if (!cartDetails || !addressDetails) {
+      throw new Error("Cart or Address details not found");
+    }
+
+    return {
+      ...order.toObject(),
+      cartDetails: cartDetails.toObject(),
+      addressDetails: addressDetails.toObject(),
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching details for order ${order._id}: ${error.message}`
+    );
+    throw error;
+  }
+};
+
 const getOrderByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
     const orders = await OrderModel.find({ userId });
 
-    // Retrieve Cart and Address records for each order
     const ordersWithDetails = await Promise.all(
-      orders.map(async (order) => {
-        const cartDetails = await CartModel.findById(order.cartIds[0]);
-        const addressDetails = await AddressModel.findById(order.addressId);
-
-        return {
-          ...order.toObject(),
-          cartDetails,
-          addressDetails,
-        };
-      })
+      orders.map(async (order) => getOrderDetails(order))
     );
 
     res.status(200).json(ordersWithDetails);
@@ -43,18 +55,8 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find();
 
-    // Retrieve Cart and Address records for each order
     const ordersWithDetails = await Promise.all(
-      orders.map(async (order) => {
-        const cartDetails = await CartModel.findById(order.cartIds[0]);
-        const addressDetails = await AddressModel.findById(order.addressId);
-
-        return {
-          ...order.toObject(),
-          cartDetails,
-          addressDetails,
-        };
-      })
+      orders.map(async (order) => getOrderDetails(order))
     );
 
     res.status(200).json(ordersWithDetails);

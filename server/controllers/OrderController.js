@@ -37,7 +37,12 @@ const getOrderDetails = async (order) => {
 
 const getOrderByUserId = async (req, res) => {
   try {
-    const userId = req.body.userId; // Assuming userId is present in req.body
+    const userId = req.body.userId;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId in request body" });
+    }
+
     const orders = await OrderModel.find({ userId });
 
     const ordersWithDetails = await Promise.all(

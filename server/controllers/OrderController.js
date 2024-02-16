@@ -32,10 +32,22 @@ const createOrder = async (req, res) => {
     const savedOrder = await newOrder.save();
 
     // Return the saved order as the response
-    res.status(201).json(savedOrder);
+    res
+      .status(201)
+      .json({ message: "Order created successfully", data: savedOrder });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    let errorMessage = "Internal Server Error";
+
+    // Check for specific error types
+    if (error.name === "ValidationError") {
+      errorMessage = "Validation Error. Please check your input data.";
+    } else if (error.name === "MongoError" && error.code === 11000) {
+      errorMessage = "Duplicate key error. This order may already exist.";
+    }
+
+    res.status(500).json({ error: errorMessage });
   }
 };
 

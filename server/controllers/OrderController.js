@@ -7,12 +7,15 @@ import AddressModel from "../models/AddressModel.js";
 
 const createOrder = async (req, res) => {
   try {
-    const newOrder = new OrderModel({
-      ...req.body,
-    });
+    const newOrderData = req.body;
 
+    // Create a new order object using the OrderModel
+    const newOrder = new OrderModel(newOrderData);
+
+    // Save the order object to the database
     const savedOrder = await newOrder.save();
 
+    // Respond with the saved order object
     res.status(201).json(savedOrder);
   } catch (error) {
     console.error(error);

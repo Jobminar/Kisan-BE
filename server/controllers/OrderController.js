@@ -6,71 +6,36 @@ import AddressModel from "../models/AddressModel.js";
 
 const createOrder = async (req, res) => {
   try {
-    // Extract necessary information from the request body
-    const {
-      userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus,
-      addressId,
-      currentDate,
-      cartIds,
-      itemImage,
-      count,
-    } = req.body;
+    // Extract relevant data from the request body or provide default values
+    const orderData = req.body || {};
 
-    // Validate that none of the required fields are null
-    if (
-      userId === null ||
-      payment === null ||
-      paymentId === null ||
-      price === null ||
-      orderStatus === null ||
-      addressId === null ||
-      currentDate === null ||
-      cartIds === null ||
-      itemImage === null ||
-      count === null
-    ) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
+    // Default values for each property
+    const defaultValues = {
+      userId: "",
+      payment: "",
+      paymentId: "",
+      price: 0,
+      orderStatus: "Pending",
+      addressId: null,
+      cartIds: [],
+      itemImage: "",
+      count: 0,
+    };
 
-    // Create a new order using the OrderModel
-    const newOrder = new OrderModel({
-      userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus,
-      addressId,
-      currentDate,
-      cartIds,
-      itemImage,
-      count,
-    });
+    // Merge the default values with the provided data
+    const newOrderData = { ...defaultValues, ...orderData };
+
+    // Create a new order instance
+    const newOrder = new OrderModel(newOrderData);
 
     // Save the order to the database
     const savedOrder = await newOrder.save();
 
-    // Send a detailed success response
-    res.status(201).json({
-      success: true,
-      message: "Order successfully created",
-      order: savedOrder,
-    });
+    // Return the saved order as the response
+    res.status(201).json(savedOrder);
   } catch (error) {
     console.error("Error creating order:", error);
-
-    // If there's an error, still send a response with an error message
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
-  } finally {
-    // Additional cleanup or final steps
-    // Add your cleanup logic or any other steps that should be executed regardless of success or failure
-    // Example: close a database connection, release resources, etc.
-    console.log("Finally block executed");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

@@ -3,35 +3,50 @@ import { Schema, model } from "mongoose";
 const orderSchema = new Schema({
   userId: {
     type: String,
+    required: true,
   },
   payment: {
     type: String,
+    required: true,
   },
   paymentId: {
     type: String,
+    required: true,
   },
   price: {
     type: Number,
+    required: true,
   },
   orderStatus: {
     type: String,
+    required: true,
+    enum: ["Pending", "Processing", "Shipped", "Delivered"], // Enum for valid order statuses
   },
   addressId: {
     type: Schema.Types.ObjectId,
-    ref: "Address", // Reference to the 'Address' model
+    ref: "Address",
+    required: true,
   },
   currentDate: {
     type: Date,
     default: Date.now,
+    required: true,
   },
   cartIds: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Cart", // Reference to the 'Cart' model
+      ref: "Cart",
+      required: true,
     },
   ],
-  itemImage: { type: String },
-  count: { type: Number },
+  itemImage: {
+    type: String,
+    required: true,
+  },
+  count: {
+    type: Number,
+    required: true,
+  },
 });
 
 const OrderModel = model("Order", orderSchema);

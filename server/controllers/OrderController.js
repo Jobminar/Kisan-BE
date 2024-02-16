@@ -3,69 +3,58 @@ import OrderModel from "../models/OrderModel.js"; // Update the path
 import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
 // Create a new order
-const storage = multer.memoryStorage(); // Store images in memory as buffers
-const upload = multer({ storage: storage });
+const storage = multer.memoryStorage(); // You can customize this based on your file storage needs
+const upload = multer({ storage: storage }).single("itemImage");
 
-// Create a new order with Multer for handling file uploads
-const postOrder = upload.single("itemImage", async (req, res) => {
-  try {
-    // Check if required fields are present in the request body
-    const requiredFields = [
-      "userId",
-      "payment",
-      "paymentId",
-      "price",
-      "orderStatus",
-      "addressId",
-      "cartIds",
-      "itemImage",
-      "count",
-    ];
-    for (const field of requiredFields) {
-      if (!req.body[field]) {
+const createOrder = (req, res) => {
+  upload(req, res, async (err) => {
+    try {
+      if (err instanceof multer.MulterError) {
+        // Handle Multer errors (e.g., file size, file type)
         return res
           .status(400)
-          .json({ error: `${field} is required in the request body` });
+          .json({ error: "Multer Error", message: err.message });
+      } else if (err) {
+        // Handle other errors
+        console.error(err);
+        return res.status(500).json({ error: "Internal Server Error" });
       }
-    }
 
-    const orderData = {
-      userId: req.body.userId,
-      payment: req.body.payment,
-      paymentId: req.body.paymentId,
-      price: req.body.price,
-      orderStatus: req.body.orderStatus,
-      addressId: req.body.addressId,
-      currentDate: req.body.currentDate,
-      cartIds: req.body.cartIds,
-      itemImage: req.body.itemsImage,
-      count: req.body.count,
-    };
+      const {
+        userId,
+        payment,
+        paymentId,
+        price,
+        orderStatus,
+        addressId,
+        cartIds,
+        count,
+      } = req.body;
 
-    // If a file is uploaded, convert the itemImage buffer to base64
-    if (req.file) {
-      orderData.itemImage = req.file.buffer.toString("base64");
-    }
+      // Access the file buffer if uploaded
+      const itemImage = req.file ? req.file.buffer.toString("base64") : null;
 
-    const newOrder = await OrderModel.create(orderData);
-    res
-      .status(201)
-      .json({ message: "Order created successfully", order: newOrder });
-  } catch (error) {
-    console.error(error);
+      const newOrder = new OrderModel({
+        userId,
+        payment,
+        paymentId,
+        price,
+        orderStatus,
+        addressId,
+        cartIds,
+        itemImage,
+        count,
+      });
 
-    // Handle different types of errors and provide appropriate error messages
-    if (error.name === "ValidationError") {
-      // Mongoose validation error
-      res
-        .status(400)
-        .json({ error: "Validation error. Please check your input fields." });
-    } else {
-      // Generic internal server error
+      const savedOrder = await newOrder.save();
+
+      res.status(201).json(savedOrder);
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  }
-});
+  });
+};
 
 const getOrderDetails = async (order) => {
   try {
@@ -164,7 +153,7 @@ const updateOrder = async (req, res) => {
 };
 
 export default {
-  postOrder,
+  createOrder,
   getOrderByUserId,
   getAllOrders,
   getOrderDetails,

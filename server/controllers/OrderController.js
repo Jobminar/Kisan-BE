@@ -1,4 +1,3 @@
-import multer from "multer";
 import OrderModel from "../models/OrderModel.js"; // Update the path
 import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
@@ -7,18 +6,39 @@ import AddressModel from "../models/AddressModel.js";
 
 const createOrder = async (req, res) => {
   try {
-    const newOrderData = req.body;
+    // Extract necessary information from the request body
+    const {
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      itemImage,
+      count,
+    } = req.body;
 
-    // Create a new order object using the OrderModel
-    const newOrder = new OrderModel(newOrderData);
+    // Create a new order using the OrderModel
+    const newOrder = new OrderModel({
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      itemImage,
+      count,
+    });
 
-    // Save the order object to the database
+    // Save the order to the database
     const savedOrder = await newOrder.save();
 
-    // Respond with the saved order object
+    // Send the saved order as a response
     res.status(201).json(savedOrder);
   } catch (error) {
-    console.error(error);
+    console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

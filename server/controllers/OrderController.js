@@ -9,7 +9,38 @@ const upload = multer({ storage: storage });
 // Create a new order with Multer for handling file uploads
 const postOrder = upload.single("itemImage", async (req, res) => {
   try {
-    const orderData = req.body;
+    // Check if required fields are present in the request body
+    const requiredFields = [
+      "userId",
+      "payment",
+      "paymentId",
+      "price",
+      "orderStatus",
+      "addressId",
+      "cartIds",
+      "itemImage",
+      "count",
+    ];
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res
+          .status(400)
+          .json({ error: `${field} is required in the request body` });
+      }
+    }
+
+    const orderData = {
+      userId: req.body.userId,
+      payment: req.body.payment,
+      paymentId: req.body.paymentId,
+      price: req.body.price,
+      orderStatus: req.body.orderStatus,
+      addressId: req.body.addressId,
+      currentDate: req.body.currentDate,
+      cartIds: req.body.cartIds,
+      itemImage: req.body.itemsImage,
+      count: req.body.count,
+    };
 
     // If a file is uploaded, convert the itemImage buffer to base64
     if (req.file) {
@@ -17,10 +48,22 @@ const postOrder = upload.single("itemImage", async (req, res) => {
     }
 
     const newOrder = await OrderModel.create(orderData);
-    res.status(201).json(newOrder);
+    res
+      .status(201)
+      .json({ message: "Order created successfully", order: newOrder });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    // Handle different types of errors and provide appropriate error messages
+    if (error.name === "ValidationError") {
+      // Mongoose validation error
+      res
+        .status(400)
+        .json({ error: "Validation error. Please check your input fields." });
+    } else {
+      // Generic internal server error
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 

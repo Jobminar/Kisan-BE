@@ -4,21 +4,46 @@ import AddressModel from "../models/AddressModel.js";
 // Create a new order
 // You can customize this based on your file storage needs
 
-const createOrder = (req, res) => {
-  // Create a new order with the request body
-  const newOrder = new OrderModel(req.body);
+const createOrder = async (req, res) => {
+  try {
+    // Extract necessary information from the request body
+    const {
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      currentDate,
+      cartIds,
+      itemImage,
+      count,
+    } = req.body;
 
-  // Save the new order to the database
-  newOrder.save((err, order) => {
-    // Handle any errors
-    if (err) {
-      return res.status(500).json({ message: err.message });
-    }
-    // Return the saved order as a JSON response
-    return res.status(201).json(order);
-  });
+    // Create a new order using the OrderModel
+    const newOrder = new OrderModel({
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      currentDate,
+      cartIds,
+      itemImage,
+      count,
+    });
+
+    // Save the order to the database
+    const savedOrder = await newOrder.save();
+
+    // Send the saved order as a response
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
-
 const getOrderDetails = async (order) => {
   try {
     const cartDetails = await CartModel.findById(order.cartIds[0]);

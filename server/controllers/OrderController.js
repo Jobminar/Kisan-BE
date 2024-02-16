@@ -20,6 +20,22 @@ const createOrder = async (req, res) => {
       count,
     } = req.body;
 
+    // Validate that none of the required fields are null
+    if (
+      userId === null ||
+      payment === null ||
+      paymentId === null ||
+      price === null ||
+      orderStatus === null ||
+      addressId === null ||
+      currentDate === null ||
+      cartIds === null ||
+      itemImage === null ||
+      count === null
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
     // Create a new order using the OrderModel
     const newOrder = new OrderModel({
       userId,
@@ -37,13 +53,27 @@ const createOrder = async (req, res) => {
     // Save the order to the database
     const savedOrder = await newOrder.save();
 
-    // Send the saved order as a response
-    res.status(201).json(savedOrder);
+    // Send a detailed success response
+    res.status(201).json({
+      success: true,
+      message: "Order successfully created",
+      order: savedOrder,
+    });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    // If there's an error, still send a response with an error message
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
+  } finally {
+    // Additional cleanup or final steps
+    // Add your cleanup logic or any other steps that should be executed regardless of success or failure
+    // Example: close a database connection, release resources, etc.
+    console.log("Finally block executed");
   }
 };
+
 const getOrderDetails = async (order) => {
   try {
     const cartDetails = await CartModel.findById(order.cartIds[0]);

@@ -23,8 +23,7 @@ const orderSchema = new Schema({
     enum: ["Pending", "Processing", "Shipped", "Delivered"], // Enum for valid order statuses
   },
   addressId: {
-    type: Schema.Types.ObjectId,
-    ref: "Address",
+    type: String,
     required: true,
   },
   currentDate: {
@@ -34,8 +33,7 @@ const orderSchema = new Schema({
   },
   cartIds: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Cart",
+      type: String,
       required: true,
     },
   ],

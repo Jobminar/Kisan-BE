@@ -37,7 +37,7 @@ const getOrderDetails = async (order) => {
 
 const getOrderByUserId = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.body.userId; // Assuming userId is present in req.body
     const orders = await OrderModel.find({ userId });
 
     const ordersWithDetails = await Promise.all(

@@ -6,32 +6,11 @@ import AddressModel from "../models/AddressModel.js";
 
 const createOrder = async (req, res) => {
   try {
-    // Extract relevant data from the request body or provide default values
-    const orderData = req.body || {};
+    const orderData = req.body;
 
-    // Default values for each property
-    const defaultValues = {
-      userId: "",
-      payment: "",
-      paymentId: "",
-      price: 0,
-      orderStatus: "Pending",
-      addressId: null,
-      cartIds: [],
-      itemImage: "",
-      count: 0,
-    };
-
-    // Merge the default values with the provided data
-    const newOrderData = { ...defaultValues, ...orderData };
-
-    // Create a new order instance
-    const newOrder = new OrderModel(newOrderData);
-
-    // Save the order to the database
+    const newOrder = new OrderModel(orderData);
     const savedOrder = await newOrder.save();
 
-    // Return the saved order as the response
     res
       .status(201)
       .json({ message: "Order created successfully", data: savedOrder });
@@ -40,7 +19,6 @@ const createOrder = async (req, res) => {
 
     let errorMessage = "Internal Server Error";
 
-    // Check for specific error types
     if (error.name === "ValidationError") {
       errorMessage = "Validation Error. Please check your input data.";
     } else if (error.name === "MongoError" && error.code === 11000) {

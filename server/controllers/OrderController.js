@@ -89,7 +89,6 @@ const createOrder = async (req, res) => {
       price,
       orderStatus,
       addressId,
-      currentDate,
       // cartIds,
       count,
     } = req.body;
@@ -102,13 +101,15 @@ const createOrder = async (req, res) => {
       !price ||
       !orderStatus ||
       !addressId ||
-      !currentDate ||
       // !cartIds ||
       !count
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
     }
+
+    // Set currentDate to the current date and time
+    const currentDate = new Date();
 
     // let imageBuffer;
 

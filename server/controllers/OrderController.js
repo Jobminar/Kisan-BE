@@ -91,7 +91,7 @@ const createOrder = async (req, res) => {
       addressId,
       cartIds,
       count,
-      itemImage, // assuming it's directly provided as a base64 string from the frontend
+      itemImage,
     } = req.body;
 
     // Validate the incoming data
@@ -103,8 +103,10 @@ const createOrder = async (req, res) => {
       !orderStatus ||
       !addressId ||
       !cartIds ||
-      itemImage ||
-      !count
+      !count ||
+      !itemImage || // Ensure itemImage is provided
+      typeof itemImage !== "string" || // Ensure itemImage is a string
+      !isValidBase64(itemImage) // Validate the Base64 format
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
@@ -141,6 +143,17 @@ const createOrder = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// Function to validate Base64 format
+function isValidBase64(str) {
+  try {
+    return Buffer.from(str, "base64").toString("base64") === str;
+  } catch (error) {
+    return false;
+  }
+}
+
+module.exports = { createOrder };
 
 const getOrderDetails = async (order) => {
   try {

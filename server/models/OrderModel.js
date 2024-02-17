@@ -33,11 +33,11 @@ const orderSchema = new Schema({
       required: true,
     },
   ],
-  // itemImage: {
-  //   type: String,
-  //   required: true,
-  //   default: "defaultImage.jpg", // Default image if not provided
-  // },
+  itemImage: {
+    type: String,
+    required: true,
+    default: "defaultImage.jpg", // Default image if not provided
+  },
   count: {
     type: Number,
     required: true,

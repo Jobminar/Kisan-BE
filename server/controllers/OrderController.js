@@ -111,21 +111,21 @@ const createOrder = async (req, res) => {
     // Set currentDate to the current date and time
     const currentDate = new Date();
 
-    // let imageBuffer;
+    let imageBuffer;
 
-    // if (req.body.imageBuffer) {
-    //   console.log("Using imageBuffer provided in the request.");
-    //   imageBuffer = req.body.imageBuffer;
-    // } else if (req.body.base64Image) {
-    //   console.log("Using base64Image provided in the request.");
-    //   imageBuffer = Buffer.from(req.body.base64Image, "base64");
-    // } else {
-    //   console.log("No image data provided. Using defaultImage.jpg.");
-    //   imageBuffer = fs.readFileSync("defaultImage.jpg");
-    // }
+    if (req.body.imageBuffer) {
+      console.log("Using imageBuffer provided in the request.");
+      imageBuffer = req.body.imageBuffer;
+    } else if (req.body.base64Image) {
+      console.log("Using base64Image provided in the request.");
+      imageBuffer = Buffer.from(req.body.base64Image, "base64");
+    } else {
+      console.log("No image data provided. Using defaultImage.jpg.");
+      imageBuffer = fs.readFileSync("defaultImage.jpg");
+    }
 
-    // // Convert the imageBuffer to a base64 string
-    // const itemImageBase64 = imageBuffer.toString("base64");
+    // Convert the imageBuffer to a base64 string
+    const itemImageBase64 = imageBuffer.toString("base64");
 
     console.log("Creating a new Order instance...");
 
@@ -138,7 +138,7 @@ const createOrder = async (req, res) => {
       addressId,
       currentDate,
       cartIds,
-      // itemImage: itemImageBase64,
+      itemImage: itemImageBase64,
       count,
     });
 

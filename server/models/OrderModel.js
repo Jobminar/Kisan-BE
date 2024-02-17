@@ -20,7 +20,8 @@ const orderSchema = new Schema({
   orderStatus: {
     type: String,
     required: true,
-    enum: ["pending", "processing", "shipped", "delivered"], // Enum for valid order statuses
+    enum: ["pending", "processing", "shipped", "delivered"],
+    default: "pending", // Default order status if not provided
   },
   addressId: {
     type: String,
@@ -40,10 +41,12 @@ const orderSchema = new Schema({
   itemImage: {
     type: String,
     required: true,
+    default: "defaultImage.jpg", // Default image if not provided
   },
   count: {
     type: Number,
     required: true,
+    default: 1, // Default count if not provided
   },
 });
 

@@ -17,6 +17,9 @@ const createOrder = async (req, res) => {
       itemImage,
     } = req.body;
 
+    // Log the req.body for debugging
+    console.log("Request Body:", req.body);
+
     // Create a new order with the base64 image string
     const newOrder = new OrderModel({
       userId,
@@ -36,7 +39,13 @@ const createOrder = async (req, res) => {
     res.status(201).json({ message: "Order created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    // Check for specific error types (e.g., Unauthorized)
+    if (error.name === "UnauthorizedError") {
+      res.status(401).json({ error: "Unauthorized - Invalid credentials" });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 };
 

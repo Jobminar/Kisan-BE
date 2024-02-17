@@ -5,14 +5,14 @@ const orderSchema = new Schema({
     type: String,
     required: true,
   },
-  // payment: {
-  //   type: String,
-  //   required: true,
-  // },
-  // paymentId: {
-  //   type: String,
-  //   required: true,
-  // },
+  payment: {
+    type: String,
+    required: true,
+  },
+  paymentId: {
+    type: String,
+    required: true,
+  },
   // price: {
   //   type: Number,
   //   required: true,

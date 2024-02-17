@@ -84,8 +84,8 @@ const createOrder = async (req, res) => {
 
     const {
       userId,
-      // payment,
-      // paymentId,
+      payment,
+      paymentId,
       // price,
       // orderStatus,
       // addressId,
@@ -96,9 +96,9 @@ const createOrder = async (req, res) => {
 
     // Validate the incoming data
     if (
-      !userId
-      // !payment ||
-      // !paymentId ||
+      !userId ||
+      !payment ||
+      !paymentId
       // !price ||
       // !orderStatus ||
       // !addressId ||
@@ -130,8 +130,8 @@ const createOrder = async (req, res) => {
 
     const newOrder = new OrderModel({
       userId,
-      // payment,
-      // paymentId,
+      payment,
+      paymentId,
       // price,
       // orderStatus: orderStatus || "pending",
       // addressId,

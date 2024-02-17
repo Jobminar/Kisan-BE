@@ -5,6 +5,10 @@ const orderSchema = new Schema({
     type: String,
     required: true,
   },
+  itemName: {
+    type: String,
+    required: true,
+  },
   payment: {
     type: String,
     required: true,

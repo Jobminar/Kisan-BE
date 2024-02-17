@@ -84,6 +84,7 @@ const createOrder = async (req, res) => {
 
     const {
       userId,
+      itemName,
       payment,
       paymentId,
       price,
@@ -97,6 +98,7 @@ const createOrder = async (req, res) => {
     // Validate the incoming data
     if (
       !userId ||
+      !itemName ||
       !payment ||
       !paymentId ||
       !price ||
@@ -118,6 +120,7 @@ const createOrder = async (req, res) => {
 
     const newOrder = new OrderModel({
       userId,
+      itemName,
       payment,
       paymentId,
       price,

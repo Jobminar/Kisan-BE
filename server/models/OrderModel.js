@@ -20,7 +20,7 @@ const orderSchema = new Schema({
   orderStatus: {
     type: String,
     required: true,
-    enum: ["Pending", "Processing", "Shipped", "Delivered"], // Enum for valid order statuses
+    enum: ["pending", "processing", "shipped", "delivered"], // Enum for valid order statuses
   },
   addressId: {
     type: String,

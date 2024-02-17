@@ -3,29 +3,40 @@ import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
 // Create a new order
 // You can customize this based on your file storage needs
-
 const createOrder = async (req, res) => {
   try {
-    const orderData = req.body;
+    const {
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      count,
+      itemImage,
+    } = req.body;
 
-    const newOrder = new OrderModel(orderData);
-    const savedOrder = await newOrder.save();
+    // Create a new order with the base64 image string
+    const newOrder = new OrderModel({
+      userId,
+      payment,
+      paymentId,
+      price,
+      orderStatus,
+      addressId,
+      cartIds,
+      itemImage: itemImage, // Assuming itemImage is the base64 string
+      count,
+    });
 
-    res
-      .status(201)
-      .json({ message: "Order created successfully", data: savedOrder });
+    // Save the order to the database
+    await newOrder.save();
+
+    res.status(201).json({ message: "Order created successfully" });
   } catch (error) {
-    console.error("Error creating order:", error);
-
-    let errorMessage = "Internal Server Error";
-
-    if (error.name === "ValidationError") {
-      errorMessage = "Validation Error. Please check your input data.";
-    } else if (error.name === "MongoError" && error.code === 11000) {
-      errorMessage = "Duplicate key error. This order may already exist.";
-    }
-
-    res.status(500).json({ error: errorMessage });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

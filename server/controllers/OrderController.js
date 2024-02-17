@@ -132,7 +132,7 @@ const createOrder = async (req, res) => {
       userId,
       payment,
       paymentId,
-      // price,
+      price,
       // orderStatus: orderStatus || "pending",
       // addressId,
       // currentDate,

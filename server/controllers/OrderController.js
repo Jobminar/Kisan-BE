@@ -1,10 +1,13 @@
 import OrderModel from "../models/OrderModel.js"; // Update the path
 import CartModel from "../models/CartModel.js";
 import AddressModel from "../models/AddressModel.js";
+import fs from "fs";
 // Create a new order
 // You can customize this based on your file storage needs
 const createOrder = async (req, res) => {
   try {
+    console.log("Received POST request to create a new order:", req.body);
+
     const {
       userId,
       payment,
@@ -12,40 +15,66 @@ const createOrder = async (req, res) => {
       price,
       orderStatus,
       addressId,
+      currentDate,
       cartIds,
       count,
-      itemImage,
     } = req.body;
 
-    // Log the req.body for debugging
-    console.log("Request Body:", req.body);
+    // Validate the incoming data
+    if (
+      !userId ||
+      !payment ||
+      !paymentId ||
+      !price ||
+      !addressId ||
+      !currentDate ||
+      !cartIds ||
+      !count
+    ) {
+      console.error("Invalid request data.");
+      return res.status(400).json({ error: "Invalid request data" });
+    }
 
-    // Create a new order with the base64 image string
-    const newOrder = new OrderModel({
+    let imageBuffer;
+
+    if (req.body.imageBuffer) {
+      console.log("Using imageBuffer provided in the request.");
+      imageBuffer = req.body.imageBuffer;
+    } else if (req.body.base64Image) {
+      console.log("Using base64Image provided in the request.");
+      imageBuffer = Buffer.from(req.body.base64Image, "base64");
+    } else {
+      console.log("No image data provided. Using defaultImage.jpg.");
+      imageBuffer = fs.readFileSync("defaultImage.jpg");
+    }
+
+    // Convert the imageBuffer to a base64 string
+    const itemImageBase64 = imageBuffer.toString("base64");
+
+    const newOrder = new Order({
       userId,
       payment,
       paymentId,
       price,
-      orderStatus,
+      orderStatus: orderStatus || "pending",
       addressId,
+      currentDate,
       cartIds,
-      itemImage: itemImage, // Assuming itemImage is the base64 string
+      itemImage: itemImageBase64,
       count,
     });
 
+    console.log("Saving the order to the database...");
+
     // Save the order to the database
-    await newOrder.save();
+    const savedOrder = await newOrder.save();
 
-    res.status(201).json({ message: "Order created successfully" });
+    console.log("Order successfully saved:", savedOrder);
+
+    res.status(201).json(savedOrder);
   } catch (error) {
-    console.error(error);
-
-    // Check for specific error types (e.g., Unauthorized)
-    if (error.name === "UnauthorizedError") {
-      res.status(401).json({ error: "Unauthorized - Invalid credentials" });
-    } else {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

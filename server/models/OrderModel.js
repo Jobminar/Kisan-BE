@@ -20,7 +20,6 @@ const orderSchema = new Schema({
   orderStatus: {
     type: String,
     required: true,
-    enum: ["pending", "processing", "shipped", "delivered"],
     default: "pending", // Default order status if not provided
   },
   addressId: {

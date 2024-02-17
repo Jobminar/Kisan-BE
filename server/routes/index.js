@@ -79,7 +79,7 @@ router.put("/orders/:orderId", OrderController.updateOrder);
 router.get("/order-details/:orderId", OrderController.getOrderDetails);
 //creating addressses and
 router.post("/addresses", AddressController.createAddress);
-
+router.get("/:addressId", AddressController.getAddressById);
 // Route to get addresses by userId
 router.post("/addresses/getByUserId", AddressController.getAddressesByUserId);
 

@@ -15,6 +15,29 @@ const createAddress = async (req, res) => {
   }
 };
 
+const getAddressById = async (req, res) => {
+  try {
+    const { addressId } = req.params;
+
+    // Validate addressId
+    if (!addressId) {
+      return res.status(400).json({ message: "Address ID is required." });
+    }
+
+    // Retrieve the address by ID
+    const address = await AddressModel.findById(addressId);
+
+    if (!address) {
+      return res.status(404).json({ message: "Address not found." });
+    }
+
+    res.status(200).json(address);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 // Get addresses by userId
 const getAddressesByUserId = async (req, res) => {
   try {
@@ -110,4 +133,5 @@ export default {
   getAddressesByUserId,
   deleteAddressByUserId,
   updateAddressByUserId,
+  getAddressById,
 };

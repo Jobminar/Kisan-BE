@@ -27,12 +27,12 @@ const orderSchema = new Schema({
     required: true,
   },
 
-  // cartIds: [
-  //   {
-  //     type: String,
-  //     required: true,
-  //   },
-  // ],
+  cartIds: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   // itemImage: {
   //   type: String,
   //   required: true,

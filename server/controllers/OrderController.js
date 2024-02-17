@@ -89,7 +89,7 @@ const createOrder = async (req, res) => {
       price,
       orderStatus,
       addressId,
-      // cartIds,
+      cartIds,
       count,
     } = req.body;
 
@@ -101,7 +101,7 @@ const createOrder = async (req, res) => {
       !price ||
       !orderStatus ||
       !addressId ||
-      // !cartIds ||
+      !cartIds ||
       !count
     ) {
       console.error("Invalid request data.");
@@ -137,7 +137,7 @@ const createOrder = async (req, res) => {
       orderStatus: orderStatus || "pending",
       addressId,
       currentDate,
-      // cartIds,
+      cartIds,
       // itemImage: itemImageBase64,
       count,
     });

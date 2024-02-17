@@ -36,7 +36,6 @@ const orderSchema = new Schema({
   itemImage: {
     type: String,
     required: true,
-    default: "defaultImage.jpg", // Default image if not provided
   },
   count: {
     type: Number,

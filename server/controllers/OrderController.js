@@ -91,6 +91,7 @@ const createOrder = async (req, res) => {
       addressId,
       cartIds,
       count,
+      base64Image,
     } = req.body;
 
     // Validate the incoming data
@@ -111,21 +112,24 @@ const createOrder = async (req, res) => {
     // Set currentDate to the current date and time
     const currentDate = new Date();
 
-    let imageBuffer;
+    let imageBase64;
 
     if (req.body.imageBuffer) {
       console.log("Using imageBuffer provided in the request.");
-      imageBuffer = req.body.imageBuffer;
-    } else if (req.body.base64Image) {
+      imageBase64 = req.body.imageBuffer.toString("base64");
+    } else if (base64Image) {
       console.log("Using base64Image provided in the request.");
-      imageBuffer = Buffer.from(req.body.base64Image, "base64");
+
+      // Remove the base64 prefix if present
+      const base64Prefix = "data:image/png;base64,";
+      imageBase64 = base64Image.startsWith(base64Prefix)
+        ? base64Image.slice(base64Prefix.length)
+        : base64Image;
     } else {
       console.log("No image data provided. Using defaultImage.jpg.");
-      imageBuffer = fs.readFileSync("defaultImage.jpg");
+      const defaultImageBuffer = fs.readFileSync("defaultImage.jpg");
+      imageBase64 = defaultImageBuffer.toString("base64");
     }
-
-    // Convert the imageBuffer to a base64 string
-    const itemImageBase64 = imageBuffer.toString("base64");
 
     console.log("Creating a new Order instance...");
 
@@ -138,7 +142,7 @@ const createOrder = async (req, res) => {
       addressId,
       currentDate,
       cartIds,
-      itemImage: itemImageBase64,
+      itemImage: imageBase64,
       count,
     });
 

@@ -100,6 +100,7 @@ const createOrder = async (req, res) => {
       // !payment ||
       // !paymentId ||
       // !price ||
+      // !orderStatus ||
       // !addressId ||
       // !currentDate ||
       // !cartIds ||
@@ -124,6 +125,8 @@ const createOrder = async (req, res) => {
 
     // // Convert the imageBuffer to a base64 string
     // const itemImageBase64 = imageBuffer.toString("base64");
+
+    console.log("Creating a new Order instance...");
 
     const newOrder = new OrderModel({
       userId,
@@ -151,6 +154,8 @@ const createOrder = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+module.exports = { createOrder };
 
 const getOrderDetails = async (order) => {
   try {

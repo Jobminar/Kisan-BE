@@ -59,7 +59,7 @@ router.delete("/inventory/:itemId", InventoryController.deleteItem);
 // Update item in admin inventory (if needed)
 
 // Get all orders
-router.post("/orders", OrderController.createOrder);
+router.post("/createorders", OrderController.createOrder);
 
 // GET: Get orders by userId
 router.post("/ordersbyuserId", OrderController.getOrderByUserId);

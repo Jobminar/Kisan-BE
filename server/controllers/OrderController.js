@@ -105,8 +105,7 @@ const createOrder = async (req, res) => {
       !cartIds ||
       !count ||
       !itemImage || // Ensure itemImage is provided
-      typeof itemImage !== "string" || // Ensure itemImage is a string
-      !isValidBase64(itemImage) // Validate the Base64 format
+      typeof itemImage !== "string"
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
@@ -145,13 +144,6 @@ const createOrder = async (req, res) => {
 };
 
 // Function to validate Base64 format
-function isValidBase64(str) {
-  try {
-    return Buffer.from(str, "base64").toString("base64") === str;
-  } catch (error) {
-    return false;
-  }
-}
 
 const getOrderDetails = async (order) => {
   try {

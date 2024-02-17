@@ -29,7 +29,6 @@ const orderSchema = new Schema({
   currentDate: {
     type: Date,
     default: Date.now,
-    required: true,
   },
   // cartIds: [
   //   {

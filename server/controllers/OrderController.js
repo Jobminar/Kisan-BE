@@ -4,32 +4,106 @@ import AddressModel from "../models/AddressModel.js";
 import fs from "fs";
 // Create a new order
 // You can customize this based on your file storage needs
+// const createOrder = async (req, res) => {
+//   try {
+//     console.log("Received POST request to create a new order:", req.body);
+
+//     const {
+//       userId,
+//       payment,
+//       paymentId,
+//       price,
+//       orderStatus,
+//       addressId,
+//       currentDate,
+//       cartIds,
+//       count,
+//     } = req.body;
+
+//     // Validate the incoming data
+//     if (
+//       !userId ||
+//       !payment ||
+//       !paymentId ||
+//       !price ||
+//       !addressId ||
+//       !currentDate ||
+//       !cartIds ||
+//       !count
+//     ) {
+//       console.error("Invalid request data.");
+//       return res.status(400).json({ error: "Invalid request data" });
+//     }
+
+//     let imageBuffer;
+
+//     if (req.body.imageBuffer) {
+//       console.log("Using imageBuffer provided in the request.");
+//       imageBuffer = req.body.imageBuffer;
+//     } else if (req.body.base64Image) {
+//       console.log("Using base64Image provided in the request.");
+//       imageBuffer = Buffer.from(req.body.base64Image, "base64");
+//     } else {
+//       console.log("No image data provided. Using defaultImage.jpg.");
+//       imageBuffer = fs.readFileSync("defaultImage.jpg");
+//     }
+
+//     // Convert the imageBuffer to a base64 string
+//     const itemImageBase64 = imageBuffer.toString("base64");
+
+//     const newOrder = new Order({
+//       userId,
+//       payment,
+//       paymentId,
+//       price,
+//       orderStatus: orderStatus || "pending",
+//       addressId,
+//       currentDate,
+//       cartIds,
+//       itemImage: itemImageBase64,
+//       count,
+//     });
+
+//     console.log("Saving the order to the database...");
+
+//     // Save the order to the database
+//     const savedOrder = await newOrder.save();
+
+//     console.log("Order successfully saved:", savedOrder);
+
+//     res.status(201).json(savedOrder);
+//   } catch (error) {
+//     console.error("Error creating order:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 const createOrder = async (req, res) => {
   try {
     console.log("Received POST request to create a new order:", req.body);
 
     const {
       userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus,
-      addressId,
-      currentDate,
-      cartIds,
-      count,
+      // payment,
+      // paymentId,
+      // price,
+      // orderStatus,
+      // addressId,
+      // currentDate,
+      // cartIds,
+      // count,
     } = req.body;
 
     // Validate the incoming data
     if (
-      !userId ||
-      !payment ||
-      !paymentId ||
-      !price ||
-      !addressId ||
-      !currentDate ||
-      !cartIds ||
-      !count
+      !userId
+      // !payment ||
+      // !paymentId ||
+      // !price ||
+      // !addressId ||
+      // !currentDate ||
+      // !cartIds ||
+      // !count
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
@@ -53,15 +127,15 @@ const createOrder = async (req, res) => {
 
     const newOrder = new Order({
       userId,
-      payment,
-      paymentId,
-      price,
-      orderStatus: orderStatus || "pending",
-      addressId,
-      currentDate,
-      cartIds,
-      itemImage: itemImageBase64,
-      count,
+      // payment,
+      // paymentId,
+      // price,
+      // orderStatus: orderStatus || "pending",
+      // addressId,
+      // currentDate,
+      // cartIds,
+      // itemImage: itemImageBase64,
+      // count,
     });
 
     console.log("Saving the order to the database...");

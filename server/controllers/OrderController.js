@@ -86,8 +86,8 @@ const createOrder = async (req, res) => {
       userId,
       payment,
       paymentId,
-      // price,
-      // orderStatus,
+      price,
+      orderStatus,
       // addressId,
       // currentDate,
       // cartIds,
@@ -98,9 +98,9 @@ const createOrder = async (req, res) => {
     if (
       !userId ||
       !payment ||
-      !paymentId
-      // !price ||
-      // !orderStatus ||
+      !paymentId ||
+      !price ||
+      !orderStatus
       // !addressId ||
       // !currentDate ||
       // !cartIds ||

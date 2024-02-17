@@ -13,15 +13,15 @@ const orderSchema = new Schema({
     type: String,
     required: true,
   },
-  // price: {
-  //   type: Number,
-  //   required: true,
-  // },
-  // orderStatus: {
-  //   type: String,
-  //   required: true,
-  //   default: "pending", // Default order status if not provided
-  // },
+  price: {
+    type: Number,
+    required: true,
+  },
+  orderStatus: {
+    type: String,
+    required: true,
+    default: "pending", // Default order status if not provided
+  },
   // addressId: {
   //   type: String,
   //   required: true,

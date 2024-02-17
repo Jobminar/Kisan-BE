@@ -91,7 +91,7 @@ const createOrder = async (req, res) => {
       addressId,
       cartIds,
       count,
-      base64Image,
+      itemImage, // assuming it's directly provided as a base64 string from the frontend
     } = req.body;
 
     // Validate the incoming data
@@ -103,6 +103,7 @@ const createOrder = async (req, res) => {
       !orderStatus ||
       !addressId ||
       !cartIds ||
+      itemImage ||
       !count
     ) {
       console.error("Invalid request data.");
@@ -111,25 +112,6 @@ const createOrder = async (req, res) => {
 
     // Set currentDate to the current date and time
     const currentDate = new Date();
-
-    let imageBase64;
-
-    if (req.body.imageBuffer) {
-      console.log("Using imageBuffer provided in the request.");
-      imageBase64 = req.body.imageBuffer.toString("base64");
-    } else if (base64Image) {
-      console.log("Using base64Image provided in the request.");
-
-      // Remove the base64 prefix if present
-      const base64Prefix = "data:image/png;base64,";
-      imageBase64 = base64Image.startsWith(base64Prefix)
-        ? base64Image.slice(base64Prefix.length)
-        : base64Image;
-    } else {
-      console.log("No image data provided. Using defaultImage.jpg.");
-      const defaultImageBuffer = fs.readFileSync("defaultImage.jpg");
-      imageBase64 = defaultImageBuffer.toString("base64");
-    }
 
     console.log("Creating a new Order instance...");
 
@@ -142,7 +124,7 @@ const createOrder = async (req, res) => {
       addressId,
       currentDate,
       cartIds,
-      itemImage: imageBase64,
+      itemImage,
       count,
     });
 
@@ -159,6 +141,8 @@ const createOrder = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+module.exports = { createOrder };
 
 const getOrderDetails = async (order) => {
   try {

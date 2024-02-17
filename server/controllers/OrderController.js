@@ -153,8 +153,6 @@ function isValidBase64(str) {
   }
 }
 
-module.exports = { createOrder };
-
 const getOrderDetails = async (order) => {
   try {
     const cartDetails = await CartModel.findById(order.cartIds[0]);

@@ -155,8 +155,6 @@ const createOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder };
-
 const getOrderDetails = async (order) => {
   try {
     const cartDetails = await CartModel.findById(order.cartIds[0]);

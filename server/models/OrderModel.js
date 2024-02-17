@@ -22,15 +22,15 @@ const orderSchema = new Schema({
     required: true,
     default: "pending", // Default order status if not provided
   },
-  // addressId: {
-  //   type: String,
-  //   required: true,
-  // },
-  // currentDate: {
-  //   type: Date,
-  //   default: Date.now,
-  //   required: true,
-  // },
+  addressId: {
+    type: String,
+    required: true,
+  },
+  currentDate: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
   // cartIds: [
   //   {
   //     type: String,
@@ -42,11 +42,11 @@ const orderSchema = new Schema({
   //   required: true,
   //   default: "defaultImage.jpg", // Default image if not provided
   // },
-  // count: {
-  //   type: Number,
-  //   required: true,
-  //   default: 1, // Default count if not provided
-  // },
+  count: {
+    type: Number,
+    required: true,
+    default: 1, // Default count if not provided
+  },
 });
 
 const OrderModel = model("Order", orderSchema);

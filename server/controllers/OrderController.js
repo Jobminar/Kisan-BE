@@ -88,10 +88,10 @@ const createOrder = async (req, res) => {
       paymentId,
       price,
       orderStatus,
-      // addressId,
-      // currentDate,
+      addressId,
+      currentDate,
       // cartIds,
-      // count,
+      count,
     } = req.body;
 
     // Validate the incoming data
@@ -100,11 +100,11 @@ const createOrder = async (req, res) => {
       !payment ||
       !paymentId ||
       !price ||
-      !orderStatus
-      // !addressId ||
-      // !currentDate ||
+      !orderStatus ||
+      !addressId ||
+      !currentDate ||
       // !cartIds ||
-      // !count
+      !count
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
@@ -133,12 +133,12 @@ const createOrder = async (req, res) => {
       payment,
       paymentId,
       price,
-      // orderStatus: orderStatus || "pending",
-      // addressId,
-      // currentDate,
+      orderStatus: orderStatus || "pending",
+      addressId,
+      currentDate,
       // cartIds,
       // itemImage: itemImageBase64,
-      // count,
+      count,
     });
 
     console.log("Saving the order to the database...");

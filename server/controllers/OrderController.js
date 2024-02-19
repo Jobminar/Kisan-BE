@@ -244,6 +244,34 @@ const updateOrder = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId, orderStatus } = req.body;
+
+    // Validate the incoming data
+    if (!orderId || !orderStatus || typeof orderStatus !== "string") {
+      console.error("Invalid request data.");
+      return res.status(400).json({ error: "Invalid request data" });
+    }
+
+    // Update the orderStatus in the database
+    const updatedOrder = await OrderModel.findByIdAndUpdate(
+      orderId,
+      { $set: { orderStatus } },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export default {
   createOrder,
   getOrderByUserId,
@@ -252,4 +280,5 @@ export default {
   sortOrdersbyDate,
   deleteOrder,
   updateOrder,
+  updateOrderStatus,
 };

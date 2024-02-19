@@ -78,7 +78,7 @@ router.put("/orders/:orderId", OrderController.updateOrder);
 // GET: GET an order by orderId
 
 //creating addressses and orderId
-router.put("/orders/:orderId/status", OrderController.updateOrderStatus);
+router.put("/orderId/status", OrderController.updateOrderStatus);
 router.post("/addresses", AddressController.createAddress);
 router.get("/:addressId", AddressController.getAddressById);
 // Route to get addresses by userId

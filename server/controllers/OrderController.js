@@ -221,8 +221,7 @@ const getAllOrders = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
   try {
-    const orderId = req.params.orderId;
-    const { newOrderStatus } = req.body;
+    const { orderId, newOrderStatus } = req.body;
 
     // Validate the incoming data
     if (!orderId || !newOrderStatus || typeof newOrderStatus !== "string") {

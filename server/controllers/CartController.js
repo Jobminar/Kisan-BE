@@ -34,6 +34,9 @@ const createCartItem = async (req, res) => {
       itemImage = req.body.itemImage;
     }
 
+    // Add current date and time
+    const currentDate = new Date();
+
     // Create a new cart item using the CartModel
     const newCartItem = await CartModel.create({
       category,
@@ -48,6 +51,7 @@ const createCartItem = async (req, res) => {
       price,
       count,
       orderStatus,
+      currentDate, // Add currentDate to the cart item
     });
 
     // Send the newly created cart item as a JSON response with a 201 status code

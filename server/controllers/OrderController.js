@@ -77,7 +77,6 @@ import fs from "fs";
 //     res.status(500).json({ error: "Internal Server Error" });
 //   }
 // };
-
 const createOrder = async (req, res) => {
   try {
     console.log("Received POST request to create a new order:", req.body);
@@ -93,7 +92,6 @@ const createOrder = async (req, res) => {
       cartIds,
       count,
       itemImage,
-      currentDate, // Include currentDate in the request body
     } = req.body;
 
     // Validate the incoming data
@@ -108,15 +106,14 @@ const createOrder = async (req, res) => {
       !cartIds ||
       !count ||
       !itemImage || // Ensure itemImage is provided
-      typeof itemImage !== "string" ||
-      !currentDate // Ensure currentDate is provided
+      typeof itemImage !== "string"
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
     }
 
-    // Convert currentDate to a Date object
-    const parsedCurrentDate = new Date(currentDate);
+    // Create currentDate as the current date and time
+    const currentDate = new Date();
 
     console.log("Creating a new Order instance...");
 
@@ -128,7 +125,7 @@ const createOrder = async (req, res) => {
       price,
       orderStatus: orderStatus || "pending",
       addressId,
-      currentDate: parsedCurrentDate, // Use the parsed currentDate
+      currentDate,
       cartIds,
       itemImage,
       count,

@@ -93,6 +93,7 @@ const createOrder = async (req, res) => {
       cartIds,
       count,
       itemImage,
+      currentDate, // Include currentDate in the request body
     } = req.body;
 
     // Validate the incoming data
@@ -107,14 +108,15 @@ const createOrder = async (req, res) => {
       !cartIds ||
       !count ||
       !itemImage || // Ensure itemImage is provided
-      typeof itemImage !== "string"
+      typeof itemImage !== "string" ||
+      !currentDate // Ensure currentDate is provided
     ) {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
     }
 
-    // Set currentDate to the current date and time
-    const currentDate = new Date();
+    // Convert currentDate to a Date object
+    const parsedCurrentDate = new Date(currentDate);
 
     console.log("Creating a new Order instance...");
 
@@ -126,7 +128,7 @@ const createOrder = async (req, res) => {
       price,
       orderStatus: orderStatus || "pending",
       addressId,
-      currentDate,
+      currentDate: parsedCurrentDate, // Use the parsed currentDate
       cartIds,
       itemImage,
       count,

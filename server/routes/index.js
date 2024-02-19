@@ -76,7 +76,7 @@ router.delete("/orders/:orderId", OrderController.deleteOrder);
 // PUT: Update an order by orderId
 router.put("/orders/:orderId", OrderController.updateOrder);
 // GET: GET an order by orderId
-router.get("/order-details/:orderId", OrderController.getOrderDetails);
+
 //creating addressses and orderId
 router.put("/orders/:orderId/status", OrderController.updateOrderStatus);
 router.post("/addresses", AddressController.createAddress);

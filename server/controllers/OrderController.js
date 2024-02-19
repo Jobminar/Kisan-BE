@@ -148,28 +148,6 @@ const createOrder = async (req, res) => {
 
 // Function to validate Base64 format
 
-const getOrderDetails = async (order) => {
-  try {
-    const cartDetails = await CartModel.findById(order.cartIds[0]);
-    const addressDetails = await AddressModel.findById(order.addressId);
-
-    if (!cartDetails || !addressDetails) {
-      throw new Error("Cart or Address details not found");
-    }
-
-    return {
-      ...order.toObject(),
-      cartDetails: cartDetails.toObject(),
-      addressDetails: addressDetails.toObject(),
-    };
-  } catch (error) {
-    console.error(
-      `Error fetching details for order ${order._id}: ${error.message}`
-    );
-    throw error;
-  }
-};
-
 const getOrderByUserId = async (req, res) => {
   try {
     const userId = req.body.userId;
@@ -181,21 +159,6 @@ const getOrderByUserId = async (req, res) => {
     const orders = await OrderModel.find({ userId });
 
     res.status(200).json(orders);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getAllOrders = async (req, res) => {
-  try {
-    const orders = await OrderModel.find();
-
-    const ordersWithDetails = await Promise.all(
-      orders.map(async (order) => getOrderDetails(order))
-    );
-
-    res.status(200).json(ordersWithDetails);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -244,6 +207,18 @@ const updateOrder = async (req, res) => {
   }
 };
 
+// get all orders
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await OrderModel.find();
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const updateOrderStatus = async (req, res) => {
   try {
     const orderId = req.params.orderId; // Assuming orderId is sent as a parameter
@@ -277,7 +252,7 @@ export default {
   createOrder,
   getOrderByUserId,
   getAllOrders,
-  getOrderDetails,
+
   sortOrdersbyDate,
   deleteOrder,
   updateOrder,

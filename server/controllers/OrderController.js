@@ -221,11 +221,11 @@ const getAllOrders = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
   try {
-    const orderId = req.params.orderId; // Assuming orderId is sent as a parameter
-    const { orderStatus } = req.body;
+    const orderId = req.params.orderId;
+    const { newOrderStatus } = req.body;
 
     // Validate the incoming data
-    if (!orderId || !orderStatus || typeof orderStatus !== "string") {
+    if (!orderId || !newOrderStatus || typeof newOrderStatus !== "string") {
       console.error("Invalid request data.");
       return res.status(400).json({ error: "Invalid request data" });
     }
@@ -233,7 +233,7 @@ const updateOrderStatus = async (req, res) => {
     // Update the orderStatus in the database
     const updatedOrder = await OrderModel.findByIdAndUpdate(
       orderId,
-      { $set: { orderStatus } },
+      { $set: { orderStatus: newOrderStatus } },
       { new: true }
     );
 

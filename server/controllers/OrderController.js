@@ -83,6 +83,7 @@ const createOrder = async (req, res) => {
 
     const {
       userId,
+      currentDate,
       itemName,
       payment,
       paymentId,
@@ -97,6 +98,7 @@ const createOrder = async (req, res) => {
     // Validate the incoming data
     if (
       !userId ||
+      !currentDate ||
       !itemName ||
       !payment ||
       !paymentId ||
@@ -113,28 +115,21 @@ const createOrder = async (req, res) => {
     }
 
     // Create currentDate as the current date and time
-    const currentDate = new Date();
-
-    // Extract date and time
-    const createDate = currentDate.toISOString().split("T")[0];
-    const createTime = currentDate.toTimeString().split(" ")[0];
 
     console.log("Creating a new Order instance...");
 
     const newOrder = new OrderModel({
       userId,
+      currentDate,
       itemName,
       payment,
       paymentId,
       price,
       orderStatus: orderStatus || "pending",
       addressId,
-      currentDate,
       cartIds,
       itemImage,
       count,
-      createDate,
-      createTime,
     });
 
     console.log("Saving the order to the database...");

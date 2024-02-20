@@ -14,10 +14,12 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
+import { sendMessage, getMessages } from "../controllers/messageController.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
+//authentication routes
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/users", getAllUsers);
@@ -125,5 +127,10 @@ router.post("/audio/reply", AudioController.postReplyAudio);
 router.post("/audio/admin", AudioController.postAudioByAdminId);
 // Get all audio
 router.get("/audio", AudioController.getAllAudio);
+//message routes
+// Create a route handler for /send_message
+router.post("/send_message", sendMessage);
 
+// Create a route handler for /get_messages
+router.get("/get_messages", getMessages);
 export default router;

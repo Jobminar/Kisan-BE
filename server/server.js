@@ -4,10 +4,10 @@ import routes from "./routes/index.js";
 import { config } from "dotenv";
 import cors from "cors";
 import pkg from "body-parser";
+import compression from "compression";
 const { json } = pkg;
 const app = express();
 const port = process.env.PORT || 3000;
-import compression from "compression";
 
 // Load environment variables
 config();

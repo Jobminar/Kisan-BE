@@ -76,20 +76,13 @@ const getAllUsers = async (req, res) => {
 
 const updatePassword = async (req, res) => {
   try {
-    const { email, currentPassword, newPassword } = req.body;
+    const { email, newPassword } = req.body;
 
     // Find the user with the provided email
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
-    }
-
-    // Verify the provided currentPassword against the stored hashed password
-    const isPasswordValid = await argon2.verify(user.password, currentPassword);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid current password" });
     }
 
     // Hash the new password using argon2

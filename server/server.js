@@ -26,20 +26,35 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/", routes);
 
+// Connect to MongoDB
 connect(process.env.MONGO_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
 // Socket.IO connection handling
-import("socket.io").then((socketIO) => {
-  const io = new socketIO.Server(server);
-  io.on("connection", (socket) => {
-    console.log("A user connected");
+import { Server } from "socket.io";
 
-    // Handle various socket events here
-    socket.on("disconnect", () => {
-      console.log("User disconnected");
-    });
+// Attach Socket.IO to the HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // Adjust to your front-end origin
+    methods: ["GET", "POST"],
+  },
+});
+
+// Handle connection and disconnection events
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  // Listen for success messages
+  socket.on("successMessage", ({ userId, message }) => {
+    // Emit the success message to the specific user
+    io.to(userId).emit("receiveSuccessMessage", message);
+  });
+
+  // Disconnect event handling
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
 

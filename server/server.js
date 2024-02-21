@@ -37,7 +37,7 @@ connect(process.env.MONGO_URL)
 import("socket.io").then((socketIO) => {
   const io = new socketIO.Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: "*",
       methods: ["GET", "POST"],
       credentials: true,
     },

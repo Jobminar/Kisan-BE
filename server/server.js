@@ -18,7 +18,7 @@ config();
 
 // Middleware
 app.use(json());
-app.use(cors({ credentials: true }));
+app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,29 +32,32 @@ connect(process.env.MONGO_URL)
   .catch((error) => console.error("MongoDB connection error:", error));
 
 // Socket.IO connection handling
-import { Server } from "socket.io";
 
 // Attach Socket.IO to the HTTP server
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173", // Adjust to your front-end origin
-    methods: ["GET", "POST"],
-  },
-});
-
-// Handle connection and disconnection events
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  // Listen for success messages
-  socket.on("successMessage", ({ userId, message }) => {
-    // Emit the success message to the specific user
-    io.to(userId).emit("receiveSuccessMessage", message);
+import("socket.io").then((socketIO) => {
+  const io = new socketIO.Server(server, {
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
   });
 
-  // Disconnect event handling
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
+  io.on("connection", (socket) => {
+    console.log("A user connected");
+
+    // Your existing socket event handling here
+
+    // Listen for success messages
+    socket.on("successMessage", ({ userId, message }) => {
+      // Emit the success message to the specific user
+      io.to(userId).emit("receiveSuccessMessage", message);
+    });
+
+    // Disconnect event handling
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
+    });
   });
 });
 

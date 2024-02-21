@@ -1,7 +1,12 @@
 import { Router } from "express";
 import multer from "multer";
 import CartController from "../controllers/CartController.js";
-import { signup, login, getAllUsers } from "../controllers/UserController.js";
+import {
+  signup,
+  login,
+  getAllUsers,
+  updatePassword,
+} from "../controllers/UserController.js";
 import adminController from "../controllers/AdminController.js";
 import AddressController from "../controllers/AddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
@@ -15,6 +20,7 @@ import {
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
 import { sendMessage, getMessages } from "../controllers/messageController.js";
+import { saveOTP, getOTPByEmail } from "../controllers/otpController.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -23,6 +29,7 @@ const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/users", getAllUsers);
+router.put("/update-password", updatePassword);
 
 // Add more routes as needed
 // Create a new bill details entry
@@ -133,4 +140,12 @@ router.post("/send_message", sendMessage);
 
 // Create a route handler for /get_messages
 router.get("/get_messages", getMessages);
+
+// sending and getting otp
+
+// POST route to save OTP
+router.post("/otp/save", saveOTP);
+
+// GET route to retrieve OTP by email (for testing purposes)
+router.get("/otp/:email", getOTPByEmail);
 export default router;

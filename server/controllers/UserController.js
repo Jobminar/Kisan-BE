@@ -4,7 +4,7 @@ import argon2 from "argon2";
 // User signup
 const signup = async (req, res) => {
   try {
-    const { userName, phoneNumber, password } = req.body;
+    const { userName, phoneNumber, password, email } = req.body;
 
     // Check if the phoneNumber is already registered
     const existingUser = await User.findOne({ phoneNumber });
@@ -23,6 +23,7 @@ const signup = async (req, res) => {
       userName,
       phoneNumber,
       password: hashedPassword,
+      email,
     });
 
     // Send the newly created user as JSON response with a 201 status code
@@ -73,4 +74,35 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-export { signup, login, getAllUsers };
+const updatePassword = async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+
+    // Find the user with the provided email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Verify the provided currentPassword against the stored hashed password
+    const isPasswordValid = await argon2.verify(user.password, currentPassword);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid current password" });
+    }
+
+    // Hash the new password using argon2
+    const hashedNewPassword = await argon2.hash(newPassword);
+
+    // Update the user's password in the database
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(400).json({ error: "Bad Request" });
+  }
+};
+
+export { signup, login, getAllUsers, updatePassword };

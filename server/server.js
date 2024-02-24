@@ -50,12 +50,18 @@ import("socket.io").then((socketIO) => {
   io.on("connection", (socket) => {
     console.log("A user connected");
 
-    // Your existing socket event handling here
-
     // Listen for success messages
     socket.on("successMessage", ({ userId, message }) => {
+      console.log(`Received success message from userId ${userId}:`, message);
+
       // Emit the success message to the specific user
       io.to(userId).emit("receiveSuccessMessage", message);
+      console.log(`Sent receiveSuccessMessage to userId ${userId}:`, message);
+    });
+
+    // Listen for receiveSuccessMessage messages
+    socket.on("receiveSuccessMessage", (message) => {
+      console.log("Received receiveSuccessMessage:", message);
     });
 
     // Disconnect event handling

@@ -51,17 +51,12 @@ import("socket.io").then((socketIO) => {
     console.log("A user connected");
 
     // Listen for success messages
-    socket.on("successMessage", ({ userId, message }) => {
-      console.log(`Received success message from userId ${userId}:`, message);
+    socket.on("successMessage", ({ message }) => {
+      console.log("Received success message:", message);
 
-      // Emit the success message to the specific user
-      io.to(userId).emit("receiveSuccessMessage", message);
-      console.log(`Sent receiveSuccessMessage to userId ${userId}:`, message);
-    });
-
-    // Listen for receiveSuccessMessage messages
-    socket.on("receiveSuccessMessage", (message) => {
-      console.log("Received receiveSuccessMessage:", message);
+      // Emit the success message to all connected clients
+      io.emit("receiveSuccessMessage", message);
+      console.log("Sent receiveSuccessMessage to all clients:", message);
     });
 
     // Disconnect event handling

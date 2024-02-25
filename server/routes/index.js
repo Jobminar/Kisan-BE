@@ -156,5 +156,5 @@ router.post("/storemessage", storeMessage);
 router.post("/getmessagebyuserId", getMessagesByUserId);
 
 // DELETE endpoint to delete messages by userId
-router.delete("/deletemessages/:userId", deleteMessagesByUserId);
+router.post("/delete-messages", deleteMessagesByUserId);
 export default router;

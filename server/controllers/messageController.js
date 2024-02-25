@@ -51,8 +51,9 @@ const getMessagesByUserId = async (req, res) => {
 
 const deleteMessagesByUserId = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
 
+    // Use the `deleteMany` method to delete messages with matching userId
     const result = await Message.deleteMany({ userId });
 
     if (result.deletedCount > 0) {

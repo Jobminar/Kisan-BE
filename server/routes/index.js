@@ -24,6 +24,7 @@ import { saveOTP, getOTPByEmail } from "../controllers/otpController.js";
 import {
   storeMessage,
   getMessagesByUserId,
+  deleteMessagesByUserId,
 } from "../controllers/messageController.js";
 
 const storage = multer.memoryStorage();
@@ -153,4 +154,7 @@ router.post("/storemessage", storeMessage);
 
 // Route to get messages by userId
 router.get("/getmessage/:userId", getMessagesByUserId);
+
+// DELETE endpoint to delete messages by userId
+router.delete("/deletemessages/:userId", deleteMessagesByUserId);
 export default router;

@@ -33,4 +33,25 @@ const getMessagesByUserId = async (userId) => {
   }
 };
 
-export { storeMessage, getMessagesByUserId };
+const deleteMessagesByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await Message.deleteMany({ userId });
+
+    if (result.deletedCount > 0) {
+      return res
+        .status(200)
+        .json({ message: "Messages deleted successfully." });
+    } else {
+      return res
+        .status(404)
+        .json({ error: "No messages found for the given userId." });
+    }
+  } catch (error) {
+    console.error("Error deleting messages:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
+export { storeMessage, getMessagesByUserId, deleteMessagesByUserId };

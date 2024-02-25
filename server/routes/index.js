@@ -149,8 +149,8 @@ router.get("/otp/:email", getOTPByEmail);
 
 //Post route and get route
 // Route to store a new message
-router.post("/store", storeMessage);
+router.post("/storemessage", storeMessage);
 
 // Route to get messages by userId
-router.get("/get/:userId", getMessagesByUserId);
+router.get("/getmessage/:userId", getMessagesByUserId);
 export default router;

@@ -19,8 +19,12 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
-import { sendMessage, getMessages } from "../controllers/messageController.js";
+
 import { saveOTP, getOTPByEmail } from "../controllers/otpController.js";
+import {
+  storeMessage,
+  getMessagesByUserId,
+} from "../controllers/messageController.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -134,12 +138,6 @@ router.post("/audio/reply", AudioController.postReplyAudio);
 router.post("/audio/admin", AudioController.postAudioByAdminId);
 // Get all audio
 router.get("/audio", AudioController.getAllAudio);
-//message routes
-// Create a route handler for /send_message
-router.post("/send_message", sendMessage);
-
-// Create a route handler for /get_messages
-router.get("/get_messages", getMessages);
 
 // sending and getting otp
 
@@ -148,4 +146,11 @@ router.post("/otp/save", saveOTP);
 
 // GET route to retrieve OTP by email (for testing purposes)
 router.get("/otp/:email", getOTPByEmail);
+
+//Post route and get route
+// Route to store a new message
+router.post("/store", storeMessage);
+
+// Route to get messages by userId
+router.get("/get/:userId", getMessagesByUserId);
 export default router;

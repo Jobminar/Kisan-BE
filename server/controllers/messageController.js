@@ -1,42 +1,28 @@
-// Import the model module
-import { Message } from "../models/messageModel.js";
+import Message from "../models/Message.js";
 
-// Define a controller function for sending messages
-export function sendMessage(req, res, io) {
-  // Get the request body
-  const { userId, message } = req.body;
+// Store a new message
+const storeMessage = async (userId, message) => {
+  try {
+    const newMessage = new Message({
+      userId,
+      message,
+    });
 
-  // Create a new message instance with the request body
-  const newMessage = new Message({ userId, message });
+    const savedMessage = await newMessage.save();
+    return savedMessage;
+  } catch (error) {
+    throw new Error(`Error storing message: ${error.message}`);
+  }
+};
 
-  // Save the message to the database
-  newMessage.save((err, result) => {
-    if (err) {
-      // Handle error
-      res.status(500).send(err);
-    } else {
-      // Emit a message to all connected clients
-      io.emit("receive_message", newMessage);
+// Get messages by userId
+const getMessagesByUserId = async (userId) => {
+  try {
+    const messages = await Message.find({ userId }).sort({ createdAt: "desc" });
+    return messages;
+  } catch (error) {
+    throw new Error(`Error getting messages: ${error.message}`);
+  }
+};
 
-      // Send a response
-      res.send("Message sent");
-    }
-  });
-}
-
-// Define a controller function for getting messages
-export function getMessages(req, res) {
-  // Retrieve messages from the database (adjust the query as needed)
-  Message.find({}, (err, messages) => {
-    if (err) {
-      // Handle error more gracefully
-      console.error("Error fetching messages:", err);
-      res.status(500).json({ error: "Error fetching messages" });
-    } else {
-      // Send the messages as a response
-      res.json(messages);
-    }
-  });
-}
-
-// Additional functions or modifications can be added as needed
+export { storeMessage, getMessagesByUserId };

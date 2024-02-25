@@ -1,17 +1,25 @@
 import Message from "../models/Message.js";
 
 // Store a new message
-const storeMessage = async (userId, message) => {
+const storeMessage = async (req, res) => {
   try {
+    const { userId, message } = req.body;
+
     const newMessage = new Message({
       userId,
       message,
     });
 
     const savedMessage = await newMessage.save();
-    return savedMessage;
+
+    if (savedMessage) {
+      return res.status(201).json(savedMessage);
+    } else {
+      return res.status(500).json({ error: "Failed to store the message." });
+    }
   } catch (error) {
-    throw new Error(`Error storing message: ${error.message}`);
+    console.error("Error storing message:", error);
+    return res.status(500).json({ error: "Internal server error." });
   }
 };
 

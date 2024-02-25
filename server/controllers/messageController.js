@@ -24,12 +24,22 @@ const storeMessage = async (req, res) => {
 };
 
 // Get messages by userId
-const getMessagesByUserId = async (userId) => {
+const getMessagesByUserId = async (req, res) => {
   try {
-    const messages = await Message.find({ userId }).sort({ createdAt: "desc" });
-    return messages;
+    const { userId } = req.params;
+
+    const messages = await Message.find({ userId });
+
+    if (messages.length > 0) {
+      return res.status(200).json(messages);
+    } else {
+      return res
+        .status(404)
+        .json({ error: "No messages found for the given userId." });
+    }
   } catch (error) {
-    throw new Error(`Error getting messages: ${error.message}`);
+    console.error("Error retrieving messages:", error);
+    return res.status(500).json({ error: "Internal server error." });
   }
 };
 

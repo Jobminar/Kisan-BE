@@ -153,7 +153,7 @@ router.get("/otp/:email", getOTPByEmail);
 router.post("/storemessage", storeMessage);
 
 // Route to get messages by userId
-router.get("/getmessage/:userId", getMessagesByUserId);
+router.post("/getmessagebyuserId", getMessagesByUserId);
 
 // DELETE endpoint to delete messages by userId
 router.delete("/deletemessages/:userId", deleteMessagesByUserId);

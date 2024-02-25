@@ -26,7 +26,13 @@ const storeMessage = async (req, res) => {
 // Get messages by userId
 const getMessagesByUserId = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ error: "userId is required in the request body." });
+    }
 
     const messages = await Message.find({ userId });
 

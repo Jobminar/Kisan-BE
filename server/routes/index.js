@@ -19,7 +19,7 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
-
+import ContactusController from "../controllers/ContactusController.js";
 import { saveOTP, getOTPByEmail } from "../controllers/otpController.js";
 import {
   storeMessage,
@@ -157,4 +157,7 @@ router.post("/getmessagebyuserId", getMessagesByUserId);
 
 // DELETE endpoint to delete messages by userId
 router.post("/delete-messages", deleteMessagesByUserId);
+//Routes for contactus
+router.post("/postchandra", ContactusController.createContactus);
+router.post("/getAllChandra", ContactusController.getAllContactus);
 export default router;

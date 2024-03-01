@@ -96,28 +96,28 @@ const updatePassword = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: "Bad Request" });
   }
-  const getUserByUserId = async (req, res) => {
-    try {
-      const { userId } = req.params;
+};
+const getUserByUserId = async (req, res) => {
+  try {
+    const { userId } = req.body;
 
-      // Check if userId is a valid ObjectId
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ error: "Invalid User ID." });
-      }
-
-      // Retrieve the user by ID, excluding the 'password' field
-      const user = await User.findById(userId, { password: 0 });
-
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      // Send the user data as JSON response
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
+    // Check if userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User ID." });
     }
-  };
+
+    // Retrieve the user by ID, excluding the 'password' field
+    const user = await User.findById(userId, { password: 0 });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Send the user data as JSON response
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 export { signup, login, getAllUsers, updatePassword, getUserByUserId };

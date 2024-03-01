@@ -1,6 +1,6 @@
 // Import the required modules
 import AddressModel from "../models/AddressModel.js";
-
+import mongoose from "mongoose";
 // Create an address
 const createAddress = async (req, res) => {
   try {
@@ -19,9 +19,9 @@ const getAddressById = async (req, res) => {
   try {
     const { addressId } = req.params;
 
-    // Validate addressId
-    if (!addressId) {
-      return res.status(400).json({ message: "Address ID is required." });
+    // Validate addressId as a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(addressId)) {
+      return res.status(400).json({ message: "Invalid Address ID." });
     }
 
     // Retrieve the address by ID

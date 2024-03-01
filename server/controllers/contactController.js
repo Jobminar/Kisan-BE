@@ -1,13 +1,19 @@
 import Contact from "../models/contactModel.js";
 
 const contactController = {
-  createContact: async (req, res) => {
+  createContacts: async (req, res) => {
     try {
       const { name, email, mobile, message } = req.body;
 
       // Check if all required fields are present in the request body
       if (!name || !email || !mobile || !message) {
         return res.status(400).json({ error: "All fields are required" });
+      }
+
+      // Mobile number validation using a simple regex
+      const mobileRegex = /^\d{10}$/;
+      if (!mobileRegex.test(mobile)) {
+        return res.status(400).json({ error: "Invalid mobile number format" });
       }
 
       // Create a new contact using the Contact model
@@ -27,16 +33,13 @@ const contactController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-
-  getContact: async (req, res) => {
+  getAllContacts: async (req, res) => {
     try {
-      // Fetch all contacts from the database
       const contacts = await Contact.find();
-
-      res.status(200).json({ contacts });
+      res.status(200).json(contacts);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ message: "Something went wrong" });
     }
   },
 };

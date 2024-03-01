@@ -5,17 +5,12 @@ const contactController = {
     try {
       const { name, email, mobile, message } = req.body;
 
-      // Check if all required fields are present in the request body
-      if (!name || !email || !mobile || !message) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
-
       // Create a new contact using the Contact model
       const newContact = new Contact({
-        name,
-        email,
-        mobile,
-        message,
+        name: name || "", // Set to empty string if undefined
+        email: email || "", // Set to empty string if undefined
+        mobile: mobile || "", // Set to empty string if undefined
+        message: message || "", // Set to empty string if undefined
       });
 
       // Save the contact to the database
@@ -23,7 +18,7 @@ const contactController = {
 
       res.status(201).json({ message: "Contact created successfully" });
     } catch (error) {
-      console.error("Error creating contact:", error);
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
@@ -33,7 +28,7 @@ const contactController = {
       const contacts = await Contact.find();
       res.status(200).json(contacts);
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      console.error(error);
       res.status(500).json({ message: "Something went wrong" });
     }
   },

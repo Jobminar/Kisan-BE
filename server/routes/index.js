@@ -37,7 +37,7 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.get("/users", getAllUsers);
 router.put("/update-password", updatePassword);
-
+router.get("/users/:userId", getUserByUserId);
 // Bill details routes
 router.post("/bill-details", createBillDetails);
 router.get("/bill-details", getAllBillDetails);

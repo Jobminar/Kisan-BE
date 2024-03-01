@@ -10,8 +10,6 @@ const contactController = {
         return res.status(400).json({ error: "All fields are required" });
       }
 
-      // Mobile number validation using a simple regex
-
       // Create a new contact using the Contact model
       const newContact = new Contact({
         name,
@@ -25,16 +23,17 @@ const contactController = {
 
       res.status(201).json({ message: "Contact created successfully" });
     } catch (error) {
-      console.error(error);
+      console.error("Error creating contact:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+
   getAllContacts: async (req, res) => {
     try {
       const contacts = await Contact.find();
       res.status(200).json(contacts);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching contacts:", error);
       res.status(500).json({ message: "Something went wrong" });
     }
   },

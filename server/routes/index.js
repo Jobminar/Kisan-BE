@@ -6,6 +6,7 @@ import {
   login,
   getAllUsers,
   updatePassword,
+  getUserByUserId,
 } from "../controllers/UserController.js";
 import contactUsController from "../controllers/contactController.js";
 import adminController from "../controllers/AdminController.js";

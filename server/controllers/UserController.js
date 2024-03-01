@@ -1,6 +1,8 @@
 // controllers/userController.js
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
+import mongoose from "mongoose";
+
 // User signup
 const signup = async (req, res) => {
   try {

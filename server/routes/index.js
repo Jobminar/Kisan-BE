@@ -7,7 +7,7 @@ import {
   getAllUsers,
   updatePassword,
 } from "../controllers/UserController.js";
-import contactController from "../controllers/contactController.js";
+import contactUsController from "../controllers/contactController.js";
 import adminController from "../controllers/AdminController.js";
 import AddressController from "../controllers/AddressController.js";
 import InventoryController from "../controllers/InventoryController.js";
@@ -64,7 +64,12 @@ router.get("/getorders", OrderController.getAllOrders);
 router.get("/orders/sortByDate", OrderController.sortOrdersbyDate);
 router.delete("/orders/:orderId", OrderController.deleteOrder);
 router.put("/orders/:orderId", OrderController.updateOrder);
+//conatactus__________
+// POST route to handle new contact form submissions
+router.post("/contact-us", contactUsController.createContactMessage);
 
+// GET route to retrieve all contact form submissions
+router.get("/contact-us", contactUsController.getAllContactMessages);
 // Address routes
 router.put("/orderId/status", OrderController.updateOrderStatus);
 router.post("/addresses", AddressController.createAddress);
@@ -107,7 +112,5 @@ router.post("/postblog", BlogController.createBlog);
 router.post("/getAllblog", BlogController.getAllBlog);
 
 // Contact routes
-router.post("/user/contactus", contactController.createContacts);
-router.get("/user/contactus", contactController.getAllContacts);
 
 export default router;

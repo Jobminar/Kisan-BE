@@ -11,10 +11,6 @@ const contactController = {
       }
 
       // Mobile number validation using a simple regex
-      const mobileRegex = /^\d{10}$/;
-      if (!mobileRegex.test(mobile)) {
-        return res.status(400).json({ error: "Invalid mobile number format" });
-      }
 
       // Create a new contact using the Contact model
       const newContact = new Contact({

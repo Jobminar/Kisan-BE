@@ -42,6 +42,7 @@ import("socket.io").then((socketIO) => {
         "http://localhost:4000",
         "http://localhost:4200",
         "https://server.thekisanmarket.com/",
+        "https://kisanmart.onrender.com",
       ],
       methods: ["GET", "POST"],
       credentials: true,

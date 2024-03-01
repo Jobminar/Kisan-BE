@@ -7,10 +7,10 @@ const contactController = {
 
       // Create a new contact using the Contact model
       const newContact = new Contact({
-        name: name || "", // Set to empty string if undefined
-        email: email || "", // Set to empty string if undefined
-        mobile: mobile || "", // Set to empty string if undefined
-        message: message || "", // Set to empty string if undefined
+        name: name || "",
+        email: email || "",
+        mobile: mobile || "",
+        message: message || "",
       });
 
       // Save the contact to the database

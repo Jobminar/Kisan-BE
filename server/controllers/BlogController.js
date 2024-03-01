@@ -1,7 +1,7 @@
-import Contactus from "../models/ContactusModel.js";
+import Blog from "../models/BlogModel.js";
 
-const ContactusController = {
-  createContactus: async (req, res) => {
+const BlogController = {
+  createBlog: async (req, res) => {
     try {
       const { name, price, image } = req.body;
 
@@ -12,27 +12,27 @@ const ContactusController = {
           .json({ message: "Name, price, and image are required fields" });
       }
 
-      const newContactus = new Contactus({
+      const newBlog = new Blog({
         name,
         price,
         image,
       });
 
-      await newContactus.save();
+      await newBlog.save();
 
       res
         .status(201)
-        .json({ message: "Contactus item created successfully", newContactus });
+        .json({ message: "Blog item created successfully", newBlog });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   },
-  getAllContactus: async (req, res) => {
+  getAllBlog: async (req, res) => {
     try {
-      const allContactus = await Contactus.find();
+      const allBlog = await Blog.find();
 
-      res.status(200).json(allContactus);
+      res.status(200).json(allBlog);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error" });
@@ -40,4 +40,4 @@ const ContactusController = {
   },
 };
 
-export default ContactusController;
+export default BlogController;

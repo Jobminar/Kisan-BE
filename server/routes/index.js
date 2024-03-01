@@ -19,13 +19,14 @@ import {
   deleteBillDetailsById,
 } from "../controllers/BillDetailsController.js";
 import AudioController from "../controllers/AudioController.js";
-import ContactusController from "../controllers/ContactusController.js";
+import BlogController from "../controllers/BlogController.js";
 import { saveOTP, getOTPByEmail } from "../controllers/otpController.js";
 import {
   storeMessage,
   getMessagesByUserId,
   deleteMessagesByUserId,
 } from "../controllers/messageController.js";
+import contactController from "../controllers/contactController.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -157,7 +158,11 @@ router.post("/getmessagebyuserId", getMessagesByUserId);
 
 // DELETE endpoint to delete messages by userId
 router.post("/delete-messages", deleteMessagesByUserId);
-//Routes for contactus
-router.post("/postchandra", ContactusController.createContactus);
-router.post("/getAllChandra", ContactusController.getAllContactus);
+//Routes for Blog
+router.post("/postblog", BlogController.createBlog);
+router.post("/getAllblog", BlogController.getAllBlog);
+
+//Routes for contact
+router.post("/postcontact", contactController.createContact);
+router.get("/getcontact", contactController.getContact);
 export default router;
